@@ -84,32 +84,32 @@ na camada de aplicação.
 # 📁 Organização do Diretório
 Visando seguir a arquitetura definida para o projeto, organizamos o
 diretório do projeto da seguinte maneira:
-```json
-br.upe.booklub
+```
+📂br.upe.booklub
 │
-├───presentation -> // Código que interage com o mundo externo (controllers 
+├───📂presentation -> // Código que interage com o mundo externo (controllers 
 │   │ 		       // e exception handlers)
-│   ├───clubs -> // Controllers para clubes
-│   ├───exceptionhandlers -> // Exception Handlers
-│   └───users -> // Controllers para usuários
-├───app -> // Orquestra a lógica do sistema, servindo de conexão entre o
+│   ├───📂clubs -> // Controllers para clubes
+│   ├───📂exceptionhandlers -> // Exception Handlers
+│   └───📂users -> // Controllers para usuários
+├───📂app -> // Orquestra a lógica do sistema, servindo de conexão entre o
 │   │      //infra e domain
-│   ├───users -> // Lógica ligada a usuários
-│   │   ├───dtos
-│   │   └───services
-│   └───clubs -> // Lógica ligada a clubes
-│   	├───dtos
-│   	└───services
-├───domain -> // Código ligado às regras de negócios e objetos de domínio
-│   ├───entities -> // Entidades manipuladas
-│   └───repositories -> // Interfaces dos repositories para desacoplar do
-├───infra -> // Código de implementação que não está ligado à regra de 
+│   ├───📂users -> // Lógica ligada a usuários
+│   │   ├───📂dtos
+│   │   └───📂services
+│   └───📂clubs -> // Lógica ligada a clubes
+│   	├───📂dtos
+│   	└───📂services
+├───📂domain -> // Código ligado às regras de negócios e objetos de domínio
+│   ├───📂entities -> // Entidades manipuladas
+│   └───📂repositories -> // Interfaces dos repositories para desacoplar do
+├───📂infra -> // Código de implementação que não está ligado à regra de 
 │   │        // negócios (chamada de APIs e banco de dados)
-│   ├───gateways -> // Código para se comunicar com APIs
-└───config -> // Código de configuração
-	├───auth
-	├───docs
-	└───rest
+│   ├───📂gateways -> // Código para se comunicar com APIs
+└───📂config -> // Código de configuração
+	├───📂auth
+	├───📂docs
+	└───📂rest
 ```
 **Obs.:** O esquema acima não necessariamente representa a real estrutura
 do diretório. Alguns subdiretórios não estão sendo mostrados. Esta é apenas
