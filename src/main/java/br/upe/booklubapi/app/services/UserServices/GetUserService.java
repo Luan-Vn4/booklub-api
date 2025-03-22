@@ -8,6 +8,7 @@ import br.upe.booklubapi.app.DTOs.user.UserDTO;
 import br.upe.booklubapi.app.services.Query;
 import br.upe.booklubapi.domain.entities.User;
 import br.upe.booklubapi.domain.repositories.UserRepository;
+import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
 
 public class GetUserService implements Query<Integer, UserDTO>{
 
@@ -25,7 +26,7 @@ public class GetUserService implements Query<Integer, UserDTO>{
             return ResponseEntity.ok(new UserDTO(userOptional.get()));
         }
 
-        return null;
+        throw new UserNotFoundException();
     }
     
 }

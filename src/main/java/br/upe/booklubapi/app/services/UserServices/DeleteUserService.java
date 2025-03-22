@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import br.upe.booklubapi.app.services.Command;
 import br.upe.booklubapi.domain.entities.User;
 import br.upe.booklubapi.domain.repositories.UserRepository;
+import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
 
 @Service
 public class DeleteUserService implements Command<Integer, Void>{
@@ -27,6 +28,6 @@ public class DeleteUserService implements Command<Integer, Void>{
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return null;
+        throw new UserNotFoundException();
     }
 }
