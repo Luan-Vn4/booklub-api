@@ -14,7 +14,7 @@ import br.upe.booklubapi.app.services.UserServices.DeleteUserService;
 import br.upe.booklubapi.app.services.UserServices.GetUserService;
 import br.upe.booklubapi.domain.entities.User;
 
-@RestController
+@RestController("/user")
 public class UserController {
     private final CreateUserService createUserService;
     private final DeleteUserService deleteUserService;
@@ -26,17 +26,17 @@ public class UserController {
         this.getUserService = getUserService;
     }
 
-    @PostMapping("/user")
+    @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
         return createUserService.execute(user);
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         return deleteUserService.execute(id);
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
         return getUserService.execute(id);
     }
