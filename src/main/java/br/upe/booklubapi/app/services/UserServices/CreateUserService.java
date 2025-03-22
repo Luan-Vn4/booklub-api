@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import br.upe.booklubapi.app.DTOs.user.UserDTO;
 import br.upe.booklubapi.app.services.Command;
 import br.upe.booklubapi.domain.entities.User;
 import br.upe.booklubapi.domain.repositories.UserRepository;
@@ -22,6 +23,6 @@ public class CreateUserService implements Command<User, UserDTO>{
         
         User savedUser = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(new UserDTO(savedUser));
-    }
+    }   
     
 }
