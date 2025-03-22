@@ -13,21 +13,21 @@ public class User {
     @Column(name = "id")
     private Integer id;
     
-    @Column("image_url")
+    @Column(name="image_url")
     private String image_url;
 
-    @Column("email")
+    @Column(name="email")
     private String email;
     
-    @Column("password")
+    @Column(name="password")
     private String password;
     
-    @Column("username")
+    @Column(name="username")
     private String username;
 
-    @Column("first_name")
+    @Column(name="first_name")
     private String first_name;
     
-    @Column("last_name")
+    @Column(name="last_name")
     private String last_name;
 }
