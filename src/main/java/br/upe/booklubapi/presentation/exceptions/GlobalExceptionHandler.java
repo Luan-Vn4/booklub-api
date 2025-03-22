@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import br.upe.booklubapi.presentation.exceptions.User.EmailNotValidException;
-import br.upe.booklubapi.presentation.exceptions.User.PasswordNotValidException;
 import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
+import br.upe.booklubapi.presentation.exceptions.User.UserNotValidException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,17 +19,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler(EmailNotValidException.class)
+    @ExceptionHandler(UserNotValidException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleEmailNotValidException(EmailNotValidException exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
-
-    @ExceptionHandler(PasswordNotValidException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlePasswordNotValidException(PasswordNotValidException exception) {
+    public ErrorResponse handleUserNotValidException(UserNotValidException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

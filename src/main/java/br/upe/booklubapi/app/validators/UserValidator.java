@@ -1,20 +1,34 @@
 package br.upe.booklubapi.app.validators;
 
 import br.upe.booklubapi.domain.entities.User;
-import br.upe.booklubapi.presentation.exceptions.User.EmailNotValidException;
-import br.upe.booklubapi.presentation.exceptions.User.PasswordNotValidException;
+import br.upe.booklubapi.presentation.exceptions.ErrorMessages;
+import br.upe.booklubapi.presentation.exceptions.User.UserNotValidException;
+import io.micrometer.common.util.StringUtils;
 
 public class UserValidator {
     private UserValidator() {
     }
 
     public static void validate(User user) {
-        if(emailIsInvalid(user.getEmail())) {
-            throw new EmailNotValidException();
+
+        if(StringUtils.isEmpty(user.getUsername())) {
+            throw new UserNotValidException(ErrorMessages.USERNAME_MUST_NOT_BE_EMPTY.getMessage());
         }
 
+        if(StringUtils.isEmpty(user.getFirst_name())) {
+            throw new UserNotValidException(ErrorMessages.FIRST_NAME_MUST_NOT_BE_EMPTY.getMessage());
+        }
+
+        if(StringUtils.isEmpty(user.getLast_name())) {
+            throw new UserNotValidException(ErrorMessages.LAST_NAME_MUST_NOT_BE_EMPTY.getMessage());
+        }
+
+        if(emailIsInvalid(user.getEmail())) {
+            throw new UserNotValidException(ErrorMessages.EMAIL_NOT_VALID.getMessage());
+        }
+        
         if(passwordIsInvalid(user.getPassword())) {
-            throw new PasswordNotValidException();
+            throw new UserNotValidException(ErrorMessages.PASSWORD_NOT_VALID.getMessage());
         }
 
     }
