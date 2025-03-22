@@ -14,6 +14,41 @@ que fornecerá os dados ao app. Essas tecnologias nos permite projetar para
 gerenciar dados dos usuários, clubes, livros e encontros que fazem parte do
 aplicativo *Booklub*.
 
+# ▶ Execução da *API* para Desenvolvimento
+Para executar a *API*, basta clonar o repositório utilizando o comando
+`git clone https://github.com/Luan-Vn4/booklub-api` e realizar as configurações
+locais necessárias. Essas configurações locais do ambiente de desenvolvimento
+são fornecidas pelo arquivo `.env` que deve estar localizado na raiz do projeto.
+Como exemplo, a raiz do projeto possui o `.env.example` que serve de *template*
+para você criar seu próprio `.env`.  
+
+**Obs.:** O arquivo `.env` apenas define as configurações locais do projeto para
+os desenvolvedores, portanto, em momento algum ele deve ser rastreado pelo *git*
+ou enviado a este repositório.
+
+### Elementos do *.env*
+Conforme o desenvolvimento, podem surgir mais configurações de ambiente a serem
+definidas. Portanto, como guia para essas configurações, cada elemento do `.env`
+será adicionado nesta seção.
+- `DB_URL`: *Url* do banco de dados que será utilizado para persistir
+  os dados da *API*
+- `DB_USER`: Usuário do banco de dados através do qual será feita a conexão
+- `DB_PASSWROD`: Senha do banco de dados utilizado pela *API*
+
+### *Docker Compose*
+Para facilitar o desenvolvimento, é fornecido um arquivo `compose.yml` que
+define as configurações para subir um banco de dados *Postgresql* localmente.
+Para executá-lo, bastar ter o *Docker* instalado em sua máquina e executando.
+Então, utilize o seguinte comando para baixar as imagens necessárias e criar o
+container: `docker compose up`.
+
+Os volumes criados pelo container, neste projeto, serão guardados em um *bind 
+mount* localizado na pasta `/docker-volumes`.
+
+**Obs.:** O *bind mount* não deve ser rastreado pelo *git* nem enviado a este
+repositório, pois apenas guarda arquivos dos containers que serão executados
+localmente nas máquinas dos desenvolvedores.
+
 # 🏗 Arquitetura
 Neste projeto, adotamos uma versão simplificada do *Domain-Driven Design (DDD)*
 devido ao escopo inicial do sistema, focando nas funcionalidades essenciais e 
