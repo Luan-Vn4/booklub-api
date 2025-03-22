@@ -1,13 +1,13 @@
-package br.upe.booklubapi.app.services.UserServices;
+package br.upe.booklubapi.app.user.services;
 
 import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.upe.booklubapi.app.services.Command;
-import br.upe.booklubapi.domain.entities.User;
-import br.upe.booklubapi.domain.repositories.UserRepository;
+import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
 
 @Service

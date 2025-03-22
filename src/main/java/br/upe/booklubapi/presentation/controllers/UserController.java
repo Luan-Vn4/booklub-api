@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.upe.booklubapi.app.DTOs.user.UserDTO;
-import br.upe.booklubapi.app.services.UserServices.CreateUserService;
-import br.upe.booklubapi.app.services.UserServices.DeleteUserService;
-import br.upe.booklubapi.app.services.UserServices.GetUserService;
-import br.upe.booklubapi.domain.entities.User;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
+import br.upe.booklubapi.app.user.services.CreateUserService;
+import br.upe.booklubapi.app.user.services.DeleteUserService;
+import br.upe.booklubapi.app.user.services.GetUserService;
+import br.upe.booklubapi.domain.users.entities.User;
 
 @RestController("/user")
 public class UserController {

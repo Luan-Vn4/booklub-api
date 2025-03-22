@@ -1,6 +1,6 @@
 package br.upe.booklubapi.app.validators;
 
-import br.upe.booklubapi.domain.entities.User;
+import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.presentation.exceptions.ErrorMessages;
 import br.upe.booklubapi.presentation.exceptions.User.UserNotValidException;
 import io.micrometer.common.util.StringUtils;

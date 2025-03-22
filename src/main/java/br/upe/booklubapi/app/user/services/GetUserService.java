@@ -1,13 +1,12 @@
-package br.upe.booklubapi.app.services.UserServices;
+package br.upe.booklubapi.app.user.services;
 
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 
-import br.upe.booklubapi.app.DTOs.user.UserDTO;
-import br.upe.booklubapi.app.services.Query;
-import br.upe.booklubapi.domain.entities.User;
-import br.upe.booklubapi.domain.repositories.UserRepository;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
+import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
 
 public class GetUserService implements Query<Integer, UserDTO>{

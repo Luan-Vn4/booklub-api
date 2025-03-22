@@ -1,14 +1,13 @@
-package br.upe.booklubapi.app.services.UserServices;
+package br.upe.booklubapi.app.user.services;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.upe.booklubapi.app.DTOs.user.UserDTO;
-import br.upe.booklubapi.app.services.Command;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.validators.UserValidator;
-import br.upe.booklubapi.domain.entities.User;
-import br.upe.booklubapi.domain.repositories.UserRepository;
+import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.domain.users.repository.UserRepository;
 
 @Service
 public class CreateUserService implements Command<User, UserDTO>{
