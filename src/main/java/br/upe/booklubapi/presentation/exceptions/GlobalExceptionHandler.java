@@ -1,28 +1,37 @@
 package br.upe.booklubapi.presentation.exceptions;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import br.upe.booklubapi.presentation.exceptions.User.UserNotFoundException;
-import br.upe.booklubapi.presentation.exceptions.User.UserNotValidException;
+import br.upe.booklubapi.presentation.exceptions.core.ExceptionBody;
+import br.upe.booklubapi.utils.JsonUtils;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(UserNotFoundException exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)  
+    public ResponseEntity<ExceptionBody> handleInvalidEntityFields(MethodArgumentNotValidException exception) {
+        Map<String, String> map = exception.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                    fieldError -> fieldError.getField(),
+                    fieldError -> fieldError.getDefaultMessage(),
+                    (existing, replacement) -> existing
+                ));
+        
+        ExceptionBody body = ExceptionBody.builder()
+            .httpStatus(HttpStatus.BAD_REQUEST.value())
+            .error("Campo(s) inválido(s)")
+            .message(JsonUtils.convertMapToJson(map))
+            .timestamp(Instant.now())
+            .build();
 
-    @ExceptionHandler(UserNotValidException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUserNotValidException(UserNotValidException exception) {
-        return new ErrorResponse(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }

@@ -1,43 +1,22 @@
 package br.upe.booklubapi.presentation.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.upe.booklubapi.app.user.dtos.UserDTO;
-import br.upe.booklubapi.app.user.services.CreateUserService;
-import br.upe.booklubapi.app.user.services.DeleteUserService;
-import br.upe.booklubapi.app.user.services.GetUserService;
-import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
+import br.upe.booklubapi.app.user.services.UserService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController("/user")
+@AllArgsConstructor
 public class UserController {
-    private final CreateUserService createUserService;
-    private final DeleteUserService deleteUserService;
-    private final GetUserService getUserService;
-
-    public UserController(CreateUserService createUserService, DeleteUserService deleteUserService, GetUserService getUserService) {
-        this.createUserService = createUserService;
-        this.deleteUserService = deleteUserService;
-        this.getUserService = getUserService;
-    }
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
-        return createUserService.execute(user);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        return deleteUserService.execute(id);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
-        return getUserService.execute(id);
+    public ResponseEntity<CreateUserDTO> createUser(@Valid @RequestBody CreateUserDTO user) {
+        return ResponseEntity.ok(userService.create(user));
     }
 }
