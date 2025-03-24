@@ -5,6 +5,7 @@
 .idea
 out
 target
+*.iml
 
 ### Java ###
 # Compiled class file
