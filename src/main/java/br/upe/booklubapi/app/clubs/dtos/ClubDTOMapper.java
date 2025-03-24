@@ -11,20 +11,21 @@ import java.util.UUID;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    componentModel = MappingConstants.ComponentModel.SPRING
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    uses={ClubDTOMapperHelpers.class}
 )
 public interface ClubDTOMapper {
 
-    @Mapping(target="owner", qualifiedByName="ownerIdToOwner")
+    @Mapping(target="owner", source="ownerId", qualifiedByName="ownerIdToOwner")
     Club toEntity(ClubDTO clubDTO);
 
-    @Mapping(target="ownerId", qualifiedByName="ownerToOwnerId")
+    @Mapping(target="ownerId", source="owner", qualifiedByName="ownerToOwnerId")
     ClubDTO toDto(Club club);
 
     @BeanMapping(
         nullValuePropertyMappingStrategy=NullValuePropertyMappingStrategy.IGNORE
     )
-    @Mapping(target="owner", qualifiedByName="ownerIdToOwner")
+    @Mapping(target="owner", source="ownerId", qualifiedByName="ownerIdToOwner")
     Club partialUpdate(ClubDTO clubDTO, @MappingTarget Club club);
 
 }
