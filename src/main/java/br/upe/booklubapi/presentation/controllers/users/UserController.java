@@ -1,4 +1,4 @@
-package br.upe.booklubapi.presentation.controllers;
+package br.upe.booklubapi.presentation.controllers.users;
 
 import java.util.UUID;
 
