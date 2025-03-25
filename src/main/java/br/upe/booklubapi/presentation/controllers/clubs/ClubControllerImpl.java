@@ -80,4 +80,13 @@ public class ClubControllerImpl implements ClubController {
         ));
     }
 
+    @Override
+    public ResponseEntity<PagedModel<ClubDTO>> findAllPublic(
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            clubService.findAllPublic(pageable)
+        );
+    }
+
 }

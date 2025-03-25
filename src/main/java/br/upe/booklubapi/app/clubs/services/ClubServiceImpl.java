@@ -86,4 +86,19 @@ public class ClubServiceImpl implements ClubService {
         );
     }
 
+    @Override
+    public PagedModel<ClubDTO> findByOwnerId(UUID ownerId, Pageable pageable) {
+        return new PagedModel<>(
+            clubRepository.findByOwnerId(ownerId, pageable)
+                .map(clubDTOMapper::toDto)
+        );
+    }
+
+    @Override
+    public PagedModel<ClubDTO> findAllPublic(Pageable pageable) {
+        return new PagedModel<>(
+            clubRepository.findAllPublic(pageable)
+                .map(clubDTOMapper::toDto)
+        );
+    }
 }

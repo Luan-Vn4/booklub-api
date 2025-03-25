@@ -29,4 +29,6 @@ public interface ClubController {
         Pageable pageable
     );
 
+    ResponseEntity<PagedModel<ClubDTO>> findAllPublic(Pageable pageable);
+
 }

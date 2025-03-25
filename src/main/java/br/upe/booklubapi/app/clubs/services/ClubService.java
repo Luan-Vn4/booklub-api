@@ -28,4 +28,8 @@ public interface ClubService {
         Pageable pageable
     );
 
+    PagedModel<ClubDTO> findByOwnerId(UUID ownerId, Pageable pageable);
+
+    PagedModel<ClubDTO> findAllPublic(Pageable pageable);
+
 }
