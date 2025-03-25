@@ -6,8 +6,8 @@ import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
 import br.upe.booklubapi.app.clubs.services.ClubService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
@@ -49,14 +49,14 @@ public class ClubControllerImpl implements ClubController {
     }
 
     @Override
-    @GetMapping("/")
-    public ResponseEntity<Page<ClubDTO>> findAll(Pageable pageable) {
+    @GetMapping
+    public ResponseEntity<PagedModel<ClubDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(clubService.findAll(pageable));
     }
 
     @Override
     @GetMapping(params={"name"})
-    public ResponseEntity<Page<ClubDTO>> searchByName(
+    public ResponseEntity<PagedModel<ClubDTO>> searchByName(
         @RequestParam("name")
         String name,
         Pageable pageable
@@ -66,7 +66,7 @@ public class ClubControllerImpl implements ClubController {
 
     @Override
     @GetMapping(params={"start-date", "end-date"})
-    public ResponseEntity<Page<ClubDTO>> searchByDate(
+    public ResponseEntity<PagedModel<ClubDTO>> searchByDate(
         @RequestParam("start-date")
         LocalDate start,
         @RequestParam("end-date")

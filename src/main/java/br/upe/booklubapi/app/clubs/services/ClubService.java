@@ -3,8 +3,8 @@ package br.upe.booklubapi.app.clubs.services;
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.CreateClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -18,11 +18,11 @@ public interface ClubService {
 
     ClubDTO findById(UUID id);
 
-    Page<ClubDTO> findAll(Pageable pageable);
+    PagedModel<ClubDTO> findAll(Pageable pageable);
 
-    Page<ClubDTO> searchByName(String name, Pageable pageable);
+    PagedModel<ClubDTO> searchByName(String name, Pageable pageable);
 
-    Page<ClubDTO> searchByDate(
+    PagedModel<ClubDTO> searchByDate(
         LocalDate start,
         LocalDate end,
         Pageable pageable

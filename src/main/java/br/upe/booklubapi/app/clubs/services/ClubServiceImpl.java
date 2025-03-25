@@ -6,8 +6,8 @@ import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -59,24 +59,31 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public Page<ClubDTO> findAll(Pageable pageable) {
-        return clubRepository.findAll(pageable).map(clubDTOMapper::toDto);
+    public PagedModel<ClubDTO> findAll(Pageable pageable) {
+        return new PagedModel<>(
+            clubRepository.findAll(pageable)
+                .map(clubDTOMapper::toDto)
+        );
     }
 
     @Override
-    public Page<ClubDTO> searchByName(String name, Pageable pageable) {
-        return clubRepository.searchByName(name, pageable)
-            .map(clubDTOMapper::toDto);
+    public PagedModel<ClubDTO> searchByName(String name, Pageable pageable) {
+        return new PagedModel<>(
+            clubRepository.searchByName(name, pageable)
+                .map(clubDTOMapper::toDto)
+        );
     }
 
     @Override
-    public Page<ClubDTO> searchByDate(
+    public PagedModel<ClubDTO> searchByDate(
         LocalDate start,
         LocalDate end,
         Pageable pageable
     ) {
-        return clubRepository.searchByCreationDateBetween(start, end, pageable)
-            .map(clubDTOMapper::toDto);
+        return new PagedModel<>(
+            clubRepository.searchByCreationDateBetween(start, end, pageable)
+                .map(clubDTOMapper::toDto)
+        );
     }
 
 }
