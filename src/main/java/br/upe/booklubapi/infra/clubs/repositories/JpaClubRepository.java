@@ -28,6 +28,10 @@ public interface JpaClubRepository
     Page<Club> findByOwnerId(UUID ownerId, Pageable pageable);
 
     @Override
-    Page<Club> findByCreationDateAfter(LocalDate localDate, Pageable pageable);
+    Page<Club> searchByCreationDateBetween(
+        LocalDate startDate,
+        LocalDate endDate,
+        Pageable pageable
+    );
 
 }

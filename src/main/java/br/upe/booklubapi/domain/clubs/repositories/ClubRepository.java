@@ -21,6 +21,10 @@ public interface ClubRepository extends CrudRepository<Club, UUID> {
 
     Page<Club> findByOwnerId(UUID ownerId, Pageable pageable);
 
-    Page<Club> findByCreationDateAfter(LocalDate localDate, Pageable pageable);
+    Page<Club> searchByCreationDateBetween(
+        LocalDate startDate,
+        LocalDate endDate,
+        Pageable pageable
+    );
 
 }

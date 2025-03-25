@@ -12,9 +12,9 @@ public interface ClubService {
 
     ClubDTO create(CreateClubDTO dto);
 
-    ClubDTO update(UpdateClubDTO dto);
+    ClubDTO update(UpdateClubDTO dto, UUID id);
 
-    ClubDTO delete(UUID id);
+    void delete(UUID id);
 
     ClubDTO findById(UUID id);
 
