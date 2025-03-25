@@ -4,6 +4,7 @@ import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.CreateClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
 import br.upe.booklubapi.app.clubs.services.ClubService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,37 +22,36 @@ public class ClubControllerImpl implements ClubController {
 
     @Override
     @PostMapping("/")
-    public ResponseEntity<ClubDTO> create(CreateClubDTO dto) {
-        // TODO
-        return null;
+    public ResponseEntity<ClubDTO> create(@Valid CreateClubDTO dto) {
+        return ResponseEntity.ok(clubService.create(dto));
     }
 
     @Override
-    @PutMapping("/")
-    public ResponseEntity<ClubDTO> update(UpdateClubDTO dto) {
-        // TODO
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<ClubDTO> update(
+        @Valid UpdateClubDTO dto,
+        @PathVariable(name="id") UUID id
+    ) {
+        return ResponseEntity.ok(clubService.update(dto, id));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<ClubDTO> delete(UUID id) {
-        // TODO
-        return null;
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        clubService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<ClubDTO> findById(UUID id) {
-        // TODO
-        return null;
+    public ResponseEntity<ClubDTO> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(clubService.findById(id));
     }
 
     @Override
     @GetMapping("/")
     public ResponseEntity<Page<ClubDTO>> findAll(Pageable pageable) {
-        // TODO
-        return null;
+        return ResponseEntity.ok(clubService.findAll(pageable));
     }
 
     @Override
@@ -61,8 +61,7 @@ public class ClubControllerImpl implements ClubController {
         String name,
         Pageable pageable
     ) {
-        // TODO
-        return null;
+        return ResponseEntity.ok(clubService.searchByName(name, pageable));
     }
 
     @Override
@@ -74,8 +73,11 @@ public class ClubControllerImpl implements ClubController {
         LocalDate end,
         Pageable pageable
     ) {
-        // TODO
-        return null;
+        return ResponseEntity.ok(clubService.searchByDate(
+            start,
+            end,
+            pageable
+        ));
     }
 
 }

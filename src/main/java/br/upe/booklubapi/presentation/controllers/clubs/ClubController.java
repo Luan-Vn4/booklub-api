@@ -6,7 +6,6 @@ import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -14,9 +13,9 @@ public interface ClubController {
 
     ResponseEntity<ClubDTO> create(CreateClubDTO dto);
 
-    ResponseEntity<ClubDTO> update(UpdateClubDTO dto);
+    ResponseEntity<ClubDTO> update(UpdateClubDTO dto, UUID id);
 
-    ResponseEntity<ClubDTO> delete(UUID id);
+    ResponseEntity<?> delete(UUID id);
 
     ResponseEntity<ClubDTO> findById(UUID id);
 
