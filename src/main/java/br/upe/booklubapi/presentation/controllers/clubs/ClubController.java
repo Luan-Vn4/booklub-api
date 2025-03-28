@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Tag(
@@ -24,16 +25,13 @@ public interface ClubController {
 
     ResponseEntity<ClubDTO> findById(UUID id);
 
-    ResponseEntity<PagedModel<ClubDTO>> findAll(Pageable pageable);
-
-    ResponseEntity<PagedModel<ClubDTO>> searchByName(String name, Pageable pageable);
-
-    ResponseEntity<PagedModel<ClubDTO>> searchByDate(
-        LocalDate start,
-        LocalDate end,
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    ResponseEntity<PagedModel<ClubDTO>> search(
+        Optional<String> name,
+        Optional<LocalDate> startDate,
+        Optional<LocalDate> endDate,
+        Optional<Boolean> isPrivate,
         Pageable pageable
     );
-
-    ResponseEntity<PagedModel<ClubDTO>> findAllPublic(Pageable pageable);
 
 }

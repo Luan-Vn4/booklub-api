@@ -1,16 +1,16 @@
 package br.upe.booklubapi.presentation.controllers.users.clubs;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
+import br.upe.booklubapi.app.clubs.dtos.QueryClubDTO;
 import br.upe.booklubapi.app.clubs.services.ClubService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -22,10 +22,27 @@ public class UserClubControllerImpl implements UserClubController {
 
     @Override
     @GetMapping("/clubs")
-    public ResponseEntity<PagedModel<ClubDTO>> findByOwnerId(
-        @PathVariable(name="ownerId") UUID ownerId,
+    public ResponseEntity<PagedModel<ClubDTO>> findAllByOwnerId(
+        @RequestParam
+        Optional<String> name,
+        @RequestParam
+        Optional<LocalDate> startDate,
+        @RequestParam
+        Optional<LocalDate> endDate,
+        @RequestParam
+        Optional<Boolean> isPrivate,
+        @PathVariable(name="ownerId")
+        UUID ownerId,
         Pageable pageable
     ) {
-        return ResponseEntity.ok(clubService.findByOwnerId(ownerId, pageable));
+        final var result = clubService.findAll(new QueryClubDTO(
+            name,
+            startDate,
+            endDate,
+            isPrivate,
+            Optional.of(ownerId)
+        ), pageable);
+        return ResponseEntity.ok(result);
     }
+
 }

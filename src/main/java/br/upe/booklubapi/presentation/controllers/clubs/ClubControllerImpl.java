@@ -2,6 +2,7 @@ package br.upe.booklubapi.presentation.controllers.clubs;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.CreateClubDTO;
+import br.upe.booklubapi.app.clubs.dtos.QueryClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
 import br.upe.booklubapi.app.clubs.services.ClubService;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -21,16 +23,23 @@ public class ClubControllerImpl implements ClubController {
     private ClubService clubService;
 
     @Override
-    @PostMapping("/")
-    public ResponseEntity<ClubDTO> create(@Valid CreateClubDTO dto) {
+    @PostMapping
+    public ResponseEntity<ClubDTO> create(
+        @Valid
+        @RequestBody
+        CreateClubDTO dto
+    ) {
         return ResponseEntity.ok(clubService.create(dto));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<ClubDTO> update(
-        @Valid UpdateClubDTO dto,
-        @PathVariable(name="id") UUID id
+        @Valid
+        @RequestBody
+        UpdateClubDTO dto,
+        @PathVariable(name="id")
+        UUID id
     ) {
         return ResponseEntity.ok(clubService.update(dto, id));
     }
@@ -50,43 +59,25 @@ public class ClubControllerImpl implements ClubController {
 
     @Override
     @GetMapping
-    public ResponseEntity<PagedModel<ClubDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(clubService.findAll(pageable));
-    }
-
-    @Override
-    @GetMapping(params={"name"})
-    public ResponseEntity<PagedModel<ClubDTO>> searchByName(
-        @RequestParam("name")
-        String name,
+    public ResponseEntity<PagedModel<ClubDTO>> search(
+        @RequestParam
+        Optional<String> name,
+        @RequestParam
+        Optional<LocalDate> startDate,
+        @RequestParam
+        Optional<LocalDate> endDate,
+        @RequestParam
+        Optional<Boolean> isPrivate,
         Pageable pageable
     ) {
-        return ResponseEntity.ok(clubService.searchByName(name, pageable));
-    }
-
-    @Override
-    @GetMapping(params={"start-date", "end-date"})
-    public ResponseEntity<PagedModel<ClubDTO>> searchByDate(
-        @RequestParam("start-date")
-        LocalDate start,
-        @RequestParam("end-date")
-        LocalDate end,
-        Pageable pageable
-    ) {
-        return ResponseEntity.ok(clubService.searchByDate(
-            start,
-            end,
-            pageable
-        ));
-    }
-
-    @Override
-    public ResponseEntity<PagedModel<ClubDTO>> findAllPublic(
-        Pageable pageable
-    ) {
-        return ResponseEntity.ok(
-            clubService.findAllPublic(pageable)
-        );
+        final var result = clubService.findAll(new QueryClubDTO(
+            name,
+            startDate,
+            endDate,
+            isPrivate,
+            Optional.empty()
+        ), pageable);
+        return ResponseEntity.ok(result);
     }
 
 }
