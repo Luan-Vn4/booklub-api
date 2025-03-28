@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Tag(
@@ -14,7 +16,12 @@ import java.util.UUID;
 )
 public interface UserClubController {
 
-    ResponseEntity<PagedModel<ClubDTO>> findByOwnerId(
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    ResponseEntity<PagedModel<ClubDTO>> findAllByOwnerId(
+        Optional<String> name,
+        Optional<LocalDate> startDate,
+        Optional<LocalDate> endDate,
+        Optional<Boolean> isPrivate,
         UUID ownerId,
         Pageable pageable
     );
