@@ -103,6 +103,11 @@
       <classifier>jakarta</classifier>
       <version>${querydsl.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.minio</groupId>
+      <artifactId>minio</artifactId>
+      <version>8.5.17</version>
+    </dependency>
   </dependencies>
 
   <build>
