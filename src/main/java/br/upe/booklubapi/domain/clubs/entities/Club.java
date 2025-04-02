@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @Entity
@@ -42,5 +43,17 @@ public class Club {
     @JoinColumn(name="owner_id")
     @NotNull
     private User owner;
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Club.class.getSimpleName() + "[", "]")
+            .add("id=" + getId())
+            .add("name='" + getName() + "'")
+            .add("creationDate=" + getCreationDate())
+            .add("imageUrl='" + getImageUrl() + "'")
+            .add("isPrivate=" + getIsPrivate())
+            .add("ownerId=" + getOwner().getId())
+            .toString();
+    }
 
 }

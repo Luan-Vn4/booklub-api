@@ -1,5 +1,6 @@
 package br.upe.booklubapi.app.clubs.dtos;
 
+import br.upe.booklubapi.app.clubs.services.ClubMediaStorageService;
 import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
@@ -7,6 +8,7 @@ import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -22,12 +24,15 @@ public interface CreateClubDTOMapper {
         target="creationDate",
         expression="java(createClubDTOMapperHelpers.createDate())"
     )
-    Club toEntity(CreateClubDTO createClubDTO);
-
-    @BeanMapping(
-        nullValuePropertyMappingStrategy=NullValuePropertyMappingStrategy.IGNORE
+    @Mapping(
+        target="imageUrl",
+        expression=("""
+            java(createClubDTOMapperHelpers.imageToImageUrl(
+                createClubDTO.image(), createClubDTO.name()
+            ))
+        """)
     )
-    Club partialUpdate(CreateClubDTO createClubDTO, @MappingTarget Club club);
+    Club toEntity(CreateClubDTO createClubDTO);
 
 }
 
@@ -35,7 +40,9 @@ public interface CreateClubDTOMapper {
 @AllArgsConstructor
 class CreateClubDTOMapperHelpers {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final ClubMediaStorageService clubMediaStorageService;
 
     @Named("ownerIdToOwner")
     public @Nullable User ownerIdToOwner(UUID ownerId) {
@@ -46,9 +53,12 @@ class CreateClubDTOMapperHelpers {
         );
     }
 
-    @Named("createDate")
     public LocalDate createDate() {
         return LocalDate.now();
+    }
+
+    public String imageToImageUrl(MultipartFile image, String name) {
+        return clubMediaStorageService.saveClubPicture(image, name);
     }
 
 }

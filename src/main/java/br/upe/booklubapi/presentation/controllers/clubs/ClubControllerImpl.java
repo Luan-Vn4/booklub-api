@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
@@ -23,20 +24,21 @@ public class ClubControllerImpl implements ClubController {
     private ClubService clubService;
 
     @Override
-    @PostMapping
+    @PostMapping(consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ClubDTO> create(
         @Valid
-        @RequestBody
+        @ModelAttribute
         CreateClubDTO dto
     ) {
+        System.out.println(dto.image() != null);
         return ResponseEntity.ok(clubService.create(dto));
     }
 
     @Override
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ClubDTO> update(
         @Valid
-        @RequestBody
+        @ModelAttribute
         UpdateClubDTO dto,
         @PathVariable(name="id")
         UUID id

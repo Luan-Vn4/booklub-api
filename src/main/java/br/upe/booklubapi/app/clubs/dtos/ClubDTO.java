@@ -19,4 +19,6 @@ public record ClubDTO(
     Boolean isPrivate,
     @NotNull
     UUID ownerId
-) implements Serializable {}
+) implements Serializable {
+
+}
