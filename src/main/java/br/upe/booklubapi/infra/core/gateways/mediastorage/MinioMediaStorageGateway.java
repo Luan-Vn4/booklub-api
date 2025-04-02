@@ -109,7 +109,9 @@ public class MinioMediaStorageGateway implements MediaStorageGateway {
     @Override
     public Optional<String> getObjectUrl(
         String bucket,
-        String objectName
+        String objectName,
+        int expirationTime,
+        TimeUnit timeUnit
     ) {
         if (!bucketExists(bucket) || !objectExists(bucket, objectName)) {
             return Optional.empty();
@@ -122,7 +124,7 @@ public class MinioMediaStorageGateway implements MediaStorageGateway {
                 .method(Method.GET)
                 .bucket(bucket)
                 .object(objectName)
-                .expiry(30, TimeUnit.MINUTES)
+                .expiry(expirationTime, timeUnit)
                 .build()
             );
         } catch (MinioException | IOException | GeneralSecurityException e) {

@@ -2,6 +2,7 @@ package br.upe.booklubapi.domain.core.gateways.mediastorage;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public interface MediaStorageGateway {
 
@@ -15,7 +16,12 @@ public interface MediaStorageGateway {
 
     String uploadObject(String bucket, String object, MultipartFile file);
 
-    Optional<String> getObjectUrl(String bucket, String object);
+    Optional<String> getObjectUrl(
+        String bucket,
+        String object,
+        int expirationTime,
+        TimeUnit timeUnit
+    );
 
     void deleteObject(String bucket, String object);
 
