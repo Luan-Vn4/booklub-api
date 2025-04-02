@@ -1,4 +1,4 @@
-package br.upe.booklubapi.config;
+package br.upe.booklubapi.config.mediastorage;
 
 import io.minio.MinioClient;
 import jakarta.annotation.PostConstruct;
@@ -26,11 +26,6 @@ public class MediaStorageConfig {
             .endpoint(url)
             .credentials(accessName, accessSecret)
             .build();
-    }
-
-    @PostConstruct
-    public void startBuckets(MinioClient minioClient) {
-
     }
 
 }

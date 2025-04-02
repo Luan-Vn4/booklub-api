@@ -1,6 +1,7 @@
-package br.upe.booklubapi.infra.core.gateways;
+package br.upe.booklubapi.infra.core.gateways.mediastorage;
 
 import br.upe.booklubapi.domain.core.gateways.mediastorage.exceptions.BucketAlreadyExistsException;
+import br.upe.booklubapi.domain.core.gateways.mediastorage.exceptions.BucketNotFoundException;
 import br.upe.booklubapi.domain.core.gateways.mediastorage.exceptions.MediaStorageException;
 import br.upe.booklubapi.domain.core.gateways.mediastorage.MediaStorageGateway;
 import br.upe.booklubapi.utils.S3ErrorCode;
@@ -24,6 +25,8 @@ public class MinioMediaStorageGateway implements MediaStorageGateway {
 
     private final MinioClient minioClient;
 
+    private static final long MINIMUM_PART_SIZE = 5 * 1024 * 1024;
+
     @Override
     public void createBucket(String bucket) {
         if (bucketExists(bucket)) {
@@ -44,9 +47,10 @@ public class MinioMediaStorageGateway implements MediaStorageGateway {
     }
 
     @Override
-    public void createBucketIfNotExists(String bucketName) {
-        if (bucketExists(bucketName)) return;
+    public boolean createBucketIfNotExists(String bucketName) {
+        if (bucketExists(bucketName)) return false;
         makeBucket(bucketName);
+        return true;
     }
 
     @Override
@@ -85,11 +89,15 @@ public class MinioMediaStorageGateway implements MediaStorageGateway {
         String objectName,
         MultipartFile file
     ) {
+        if (!bucketExists(bucket)) throw new BucketNotFoundException(bucket);
+
+        long partSize = Math.max(file.getSize(), MINIMUM_PART_SIZE);
+
         try {
             return minioClient.putObject(PutObjectArgs.builder()
                 .bucket(bucket)
                 .object(objectName)
-                .stream(file.getInputStream(), file.getSize(), file.getSize())
+                .stream(file.getInputStream(), file.getSize(), partSize)
                 .contentType(file.getContentType())
                 .build()
             ).object();

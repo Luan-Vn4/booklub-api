@@ -7,7 +7,7 @@ public interface MediaStorageGateway {
 
     void createBucket(String bucket);
 
-    void createBucketIfNotExists(String bucket);
+    boolean createBucketIfNotExists(String bucket);
 
     boolean bucketExists(String bucket);
 
