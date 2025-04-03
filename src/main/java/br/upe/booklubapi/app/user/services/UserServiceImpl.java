@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
         User newUser = createUserDTOMapper.partialUpdate(newUserDTO, originalUser);
         
-        return userDTOMapper.toDto(userRepository.saveAndFlush(newUser));
+        return userDTOMapper.toDto(userRepository.save(newUser));
     }
 
     @Override
