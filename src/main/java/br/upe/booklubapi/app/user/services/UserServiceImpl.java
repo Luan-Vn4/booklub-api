@@ -3,6 +3,8 @@ package br.upe.booklubapi.app.user.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
+import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
 import org.springframework.stereotype.Service;
 
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
@@ -18,15 +20,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private CreateUserDTOMapper createUserDTOMapper;
-    private UserDTOMapper userDTOMapper;
-    private UserRepository userRepository;
+    private final CreateUserDTOMapper createUserDTOMapper;
+
+    private final UpdateUserDTOMapper updateUserDTOMapper;
+
+    private final UserDTOMapper userDTOMapper;
+
+    private final UserRepository userRepository;
     
     @Override
-    public CreateUserDTO create(CreateUserDTO userDTO) {    
+    public UserDTO create(CreateUserDTO userDTO) {
         User user = createUserDTOMapper.toEntity(userDTO);
-
-        return createUserDTOMapper.toDto(userRepository.save(user));
+        return userDTOMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -46,13 +51,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override   
-    public UserDTO update(CreateUserDTO newUserDTO, UUID uuid) {
+    public UserDTO update(UpdateUserDTO updateUserDTO, UUID uuid) {
         Optional<User> originalUserOptional = userRepository.findById(uuid);
         if (originalUserOptional.isEmpty()) throw new UserNotFoundException(uuid);
 
         User originalUser = originalUserOptional.get();
 
-        User newUser = createUserDTOMapper.partialUpdate(newUserDTO, originalUser);
+        User newUser = updateUserDTOMapper.partialUpdate(
+            updateUserDTO,
+            originalUser
+        );
         
         return userDTOMapper.toDto(userRepository.save(newUser));
     }

@@ -1,10 +1,9 @@
 package br.upe.booklubapi.app.user.dtos.mappers;
 
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.services.UserMediaStorageService;
-import org.mapstruct.*;
-import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.domain.users.entities.User;
-import java.util.UUID;
+import org.mapstruct.*;
 
 @Mapper(
     componentModel=MappingConstants.ComponentModel.SPRING,
@@ -12,23 +11,29 @@ import java.util.UUID;
     uses={UserMediaStorageService.class},
     injectionStrategy=InjectionStrategy.CONSTRUCTOR
 )
-public abstract class CreateUserDTOMapper {
+public abstract class UpdateUserDTOMapper {
 
-    private UserMediaStorageService userMediaStorageService;
+    protected UserMediaStorageService userMediaStorageService;
 
-    public abstract User toEntity(CreateUserDTO createUserDTO);
+    @BeanMapping(
+        nullValuePropertyMappingStrategy=NullValuePropertyMappingStrategy.IGNORE
+    )
+    public abstract User partialUpdate(
+        UpdateUserDTO updateUserDTO,
+        @MappingTarget User user
+    );
 
     @AfterMapping
     protected void afterMapping(
-        CreateUserDTO createUserDTO,
+        UpdateUserDTO updateUserDTO,
         @MappingTarget User user
     ) {
-        UUID userId = user.getId();
+        if (updateUserDTO.image() == null) return;
+
         String imageUrl = userMediaStorageService.saveProfilePicture(
-            createUserDTO.image(),
-            userId
+            updateUserDTO.image(),
+            user.getId()
         );
-        user.setId(userId);
         user.setImageUrl(imageUrl);
     }
 

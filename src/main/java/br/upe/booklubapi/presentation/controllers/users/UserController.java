@@ -2,6 +2,7 @@ package br.upe.booklubapi.presentation.controllers.users;
 
 import java.util.UUID;
 
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<CreateUserDTO> createUser(@Valid @RequestBody CreateUserDTO user) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserDTO user) {
         return ResponseEntity.ok(userService.create(user));
     }
 
@@ -47,8 +48,14 @@ public class UserController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody CreateUserDTO newUserDTO, @PathVariable UUID uuid) {
-        return ResponseEntity.ok(userService.update(newUserDTO, uuid));
+    public ResponseEntity<UserDTO> updateUser(
+        @Valid
+        @RequestBody
+        UpdateUserDTO updateUserDTO,
+        @PathVariable
+        UUID uuid
+    ) {
+        return ResponseEntity.ok(userService.update(updateUserDTO, uuid));
     }
 
 }
