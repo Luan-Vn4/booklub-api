@@ -34,6 +34,9 @@ será adicionado nesta seção.
   os dados da *API*
 - `DB_USER`: Usuário do banco de dados através do qual será feita a conexão
 - `DB_PASSWROD`: Senha do banco de dados utilizado pela *API*
+- `S3_URL`: Url do *media storage* com padrão *S3* utilizado para armazenar arquivos de mídia da *API*
+- `S3_ACCESS_NAME`: Nome de usuário com o qual logar no serviço de *media storage S3* 
+- `S3_ACCESS_SECRET`: Senha de acesso ao *media storage S3*
 
 ### *Docker Compose*
 Para facilitar o desenvolvimento, é fornecido um arquivo `compose.yml` que
