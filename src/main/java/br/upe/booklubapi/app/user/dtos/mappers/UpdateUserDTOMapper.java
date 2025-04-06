@@ -1,19 +1,31 @@
 package br.upe.booklubapi.app.user.dtos.mappers;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
-import br.upe.booklubapi.app.user.services.UserMediaStorageService;
 import br.upe.booklubapi.domain.users.entities.User;
-import lombok.AllArgsConstructor;
 import org.mapstruct.*;
-import org.springframework.stereotype.Component;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
-    unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = UpdateUserDTOMapperHelper.class
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface UpdateUserDTOMapper {
 
+    /**
+     * Fornece um {@link User} atualizado a partir de {@link UpdateUserDTO}.
+     * <br>
+     * <br>
+     * <b>OBS.:</b> a propriedade imageUrl do usuário não é resolvida por este
+     * mapper. Portanto, você mesmo deve gerar a url da imagem para settar
+     * no objeto {@link User} que está sendo atualizado. Por exemplo:
+     * <pre>
+     *  updateUserDTOMapper.partialUpdate(user, updateUserDTO);
+     *  user.setImageUrl(fooMediaStorage.saveImage(
+     *      updateUserDTO.image()
+     *  ));
+     * </pre>
+     * @return {@link User} atualizado sem o atributo <code>imageUrl</code>
+     * definido
+     */
     @BeanMapping(
         nullValuePropertyMappingStrategy=NullValuePropertyMappingStrategy.IGNORE
     )
@@ -21,25 +33,5 @@ public interface UpdateUserDTOMapper {
         UpdateUserDTO updateUserDTO,
         @MappingTarget User user
     );
-}
 
-@Component
-@AllArgsConstructor
-class UpdateUserDTOMapperHelper {
-
-    private final UserMediaStorageService userMediaStorageService;
-
-    @AfterMapping
-    public void afterMapping(
-        UpdateUserDTO updateUserDTO,
-        @MappingTarget User user
-    ) {
-        if (updateUserDTO.image() == null) return;
-
-        String imageUrl = userMediaStorageService.saveProfilePicture(
-            updateUserDTO.image(),
-            user.getId()
-        );
-        user.setImageUrl(imageUrl);
-    }
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
@@ -27,11 +28,20 @@ public class UserServiceImpl implements UserService {
     private final UserDTOMapper userDTOMapper;
 
     private final UserRepository userRepository;
+
+    private final UserMediaStorageService userMediaStorageService;
     
     @Override
+    @Transactional
     public UserDTO create(CreateUserDTO userDTO) {
-        User user = createUserDTOMapper.toEntity(userDTO);
-        return userDTOMapper.toDto(userRepository.save(user));
+        final User user = userRepository.save(
+            createUserDTOMapper.toEntity(userDTO)
+        );
+        user.setImageUrl(userMediaStorageService.saveProfilePicture(
+            userDTO.image(),
+            user.getId()
+        ));
+        return userDTOMapper.toDto(user);
     }
 
     @Override
@@ -50,19 +60,30 @@ public class UserServiceImpl implements UserService {
         return userDTOMapper.toDto(userOptional.get());
     }
 
-    @Override   
+    @Override
+    @Transactional
     public UserDTO update(UpdateUserDTO updateUserDTO, UUID uuid) {
-        Optional<User> originalUserOptional = userRepository.findById(uuid);
-        if (originalUserOptional.isEmpty()) throw new UserNotFoundException(uuid);
-
-        User originalUser = originalUserOptional.get();
-
-        User newUser = updateUserDTOMapper.partialUpdate(
-            updateUserDTO,
-            originalUser
+        final Optional<User> userOptional = userRepository.findById(
+            uuid
         );
+        if (userOptional.isEmpty())
+            throw new UserNotFoundException(uuid);
+
+        final User updatedUser = userRepository.save(
+            updateUserDTOMapper.partialUpdate(
+                updateUserDTO,
+                userOptional.get()
+            )
+        );
+
+        if (updateUserDTO.image() != null) {
+            updatedUser.setImageUrl(userMediaStorageService.saveProfilePicture(
+                updateUserDTO.image(),
+                uuid
+            ));
+        }
         
-        return userDTOMapper.toDto(userRepository.save(newUser));
+        return userDTOMapper.toDto(updatedUser);
     }
 
     @Override
