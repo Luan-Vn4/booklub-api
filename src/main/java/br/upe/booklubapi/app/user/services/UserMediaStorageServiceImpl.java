@@ -38,7 +38,7 @@ public class UserMediaStorageServiceImpl implements UserMediaStorageService {
     }
 
     private String generateObjectName(UUID userId, String fileExtension) {
-        return "/clubs/profile-picture/%s.%s".formatted(
+        return "/users/profile-picture/%s.%s".formatted(
             userId,
             fileExtension
         );
