@@ -1,25 +1,33 @@
 package br.upe.booklubapi.app.user.dtos.mappers;
 
 import br.upe.booklubapi.app.user.services.UserMediaStorageService;
+import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.domain.users.entities.User;
+import org.springframework.stereotype.Component;
+
 import java.util.UUID;
 
 @Mapper(
     componentModel=MappingConstants.ComponentModel.SPRING,
     unmappedTargetPolicy=ReportingPolicy.IGNORE,
-    uses={UserMediaStorageService.class},
-    injectionStrategy=InjectionStrategy.CONSTRUCTOR
+    uses={CreateUserDTOMapperHelper.class}
 )
-public abstract class CreateUserDTOMapper {
+public interface CreateUserDTOMapper {
 
-    private UserMediaStorageService userMediaStorageService;
+    User toEntity(CreateUserDTO createUserDTO);
 
-    public abstract User toEntity(CreateUserDTO createUserDTO);
+}
+
+@Component
+@AllArgsConstructor
+class CreateUserDTOMapperHelper {
+
+    private final UserMediaStorageService userMediaStorageService;
 
     @AfterMapping
-    protected void afterMapping(
+    public void afterMapping(
         CreateUserDTO createUserDTO,
         @MappingTarget User user
     ) {
