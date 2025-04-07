@@ -1,69 +1,94 @@
 package br.upe.booklubapi.app.user.services;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
-import br.upe.booklubapi.app.user.dtos.UserDTO;
-import br.upe.booklubapi.app.user.dtos.mappers.CreateUserDTOMapper;
-import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
-import br.upe.booklubapi.domain.users.entities.User;
-import br.upe.booklubapi.domain.users.repository.UserRepository;
+import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.config.KeycloakProperties;
 import br.upe.booklubapi.presentation.exceptions.UserNotFoundException;
+import br.upe.booklubapi.utils.KeycloakUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private CreateUserDTOMapper createUserDTOMapper;
-    private UserDTOMapper userDTOMapper;
-    private UserRepository userRepository;
-    
-    @Override
-    public CreateUserDTO create(CreateUserDTO userDTO) {    
-        User user = createUserDTOMapper.toEntity(userDTO);
-
-        return createUserDTOMapper.toDto(userRepository.save(user));
-    }
+    private final KeycloakProperties keycloakProperties;
+    private final KeycloakUtils keycloakUtils;
+    JwtDecoder jwtDecoder;
 
     @Override
-    public UserDTO getByUuid(UUID uuid) {
-        Optional<User> userOptional = userRepository.findById(uuid);
-        if (userOptional.isEmpty()) throw new UserNotFoundException(uuid);
+    public KeycloakUserDTO getByUuid(UUID uuid) {
+        String adminToken = keycloakUtils.getAdminToken();
 
-        return userDTOMapper.toDto(userOptional.get());
-    }
+        KeycloakUserDTO userDTO = WebClient.create()
+                .get()
+                .uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+                        + "/users/" + uuid)
+                .header("Authorization", "Bearer " + adminToken)
+                .retrieve()
+                .bodyToMono(KeycloakUserDTO.class)
+                .block();
 
-    @Override
-    public UserDTO getByEmail(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()) throw new UserNotFoundException(email);
+        if (userDTO == null) {
+            throw new UserNotFoundException(uuid);
+        }
 
-        return userDTOMapper.toDto(userOptional.get());
-    }
-
-    @Override   
-    public UserDTO update(CreateUserDTO newUserDTO, UUID uuid) {
-        Optional<User> originalUserOptional = userRepository.findById(uuid);
-        if (originalUserOptional.isEmpty()) throw new UserNotFoundException(uuid);
-
-        User originalUser = originalUserOptional.get();
-
-        User newUser = createUserDTOMapper.partialUpdate(newUserDTO, originalUser);
-        
-        return userDTOMapper.toDto(userRepository.saveAndFlush(newUser));
+        return userDTO;
     }
 
     @Override
-    public void delete(UUID uuid) {
-        Optional<User> user = userRepository.findById(uuid);
+    public List<KeycloakUserDTO> getByEmail(String email) {
+        String adminToken = keycloakUtils.getAdminToken();
 
-        if (user.isEmpty()) throw new UserNotFoundException(uuid);
+        List<KeycloakUserDTO> users = WebClient.create()
+                .get()
+                .uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+                        + "/users?email=" + email)
+                .header("Authorization", "Bearer " + adminToken)
+                .retrieve()
+                .bodyToFlux(KeycloakUserDTO.class)
+                .collectList()
+                .block();
 
-        userRepository.deleteById(uuid);
+        if (users == null) {
+            throw new UserNotFoundException(email);
+        }
+
+        return users;
     }
-    
+
+    @Override
+    public void deleteById(UUID uuid) {
+        String userToken = getUserToken();
+        String requestIssuerId = jwtDecoder.decode(userToken).getSubject();
+		String adminToken = keycloakUtils.getAdminToken();
+
+        if(!requestIssuerId.equals(uuid.toString())) {
+			throw new RuntimeException("Você não possui permissão pra remover esse usuário");
+        }
+
+        WebClient.create()
+                .delete()
+                .uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+                        + "/users/" + uuid)
+                .header("Authorization", "Bearer " + adminToken)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    public String getUserToken() {
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+            .currentRequestAttributes()).getRequest();
+
+    return request.getHeader("Authorization").substring(7);
+}
+
 }
