@@ -7,11 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.services.UserService;
+import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 
@@ -35,5 +39,10 @@ public class UserController {
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID uuid) {
         userService.deleteById(uuid);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<KeycloakUserDTO> updateUserById(@Valid @RequestBody UpdateUserDTO user, @PathVariable UUID uuid) {
+        return ResponseEntity.ok(userService.updateById(user, uuid));
     }
 }

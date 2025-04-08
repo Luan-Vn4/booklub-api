@@ -9,8 +9,6 @@ public record KeycloakUserDTO(
     String email,
     String firstName,
     String lastName,
-    boolean enabled,
-    boolean emailVerified,
     Map<String, List<String>> attributes
 ) {}
 
