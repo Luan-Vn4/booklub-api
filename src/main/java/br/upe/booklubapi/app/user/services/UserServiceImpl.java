@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
 import br.upe.booklubapi.config.KeycloakProperties;
+import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
 import br.upe.booklubapi.presentation.exceptions.UserNotFoundException;
 import br.upe.booklubapi.utils.KeycloakUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,10 +37,6 @@ public class UserServiceImpl implements UserService {
                 .bodyToMono(KeycloakUserDTO.class)
                 .block();
 
-        if (userDTO == null) {
-            throw new UserNotFoundException(uuid);
-        }
-
         return userDTO;
     }
 
@@ -57,10 +54,6 @@ public class UserServiceImpl implements UserService {
                 .collectList()
                 .block();
 
-        if (users == null) {
-            throw new UserNotFoundException(email);
-        }
-
         return users;
     }
 
@@ -71,7 +64,7 @@ public class UserServiceImpl implements UserService {
 		String adminToken = keycloakUtils.getAdminToken();
 
         if(!requestIssuerId.equals(uuid.toString())) {
-			throw new RuntimeException("Você não possui permissão pra remover esse usuário");
+			throw new UserHasNoPermissionToException("deletar usuáiro de id" + uuid);
         }
 
         WebClient.create()

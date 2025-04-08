@@ -1,6 +1,5 @@
 package br.upe.booklubapi.app.auth;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,8 +11,6 @@ import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.config.KeycloakProperties;
-import br.upe.booklubapi.presentation.exceptions.AuthBodyInvalidException;
-import br.upe.booklubapi.presentation.exceptions.UserNotCreatedException;
 import br.upe.booklubapi.utils.KeycloakUtils;
 import lombok.AllArgsConstructor;
 
@@ -43,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
                 + "}"
                 + "}";
 
-        HttpStatus status = (HttpStatus) WebClient
+        WebClient
                 .create(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
                         + "/users")
                 .post()
@@ -52,12 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 .bodyValue(userJson)
                 .retrieve()
                 .toBodilessEntity()
-                .block()
-                .getStatusCode();
-
-        if (status != HttpStatus.CREATED) {
-            throw new UserNotCreatedException();
-        }
+                .block();
 
         return userDTO;
     }
@@ -83,10 +75,6 @@ public class AuthServiceImpl implements AuthService {
                 .retrieve()
                 .bodyToMono(KeycloakTokenDTO.class)
                 .block();
-
-        if (token == null || token.access_token() == null || token.access_token().isEmpty()) {
-            throw new AuthBodyInvalidException();
-        }
 
         return token;
     }
