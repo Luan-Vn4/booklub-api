@@ -1,17 +1,15 @@
 package br.upe.booklubapi.app.user.services;
 
+import java.util.List;
 import java.util.UUID;
 
-import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
+import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 
 public interface UserService {
-    CreateUserDTO create(CreateUserDTO createUserDTO);
-    
-    UserDTO getByUuid(UUID uuid);
-    UserDTO getByEmail(String email);
-
-    UserDTO update(CreateUserDTO dto, UUID uuid);
-
-    void delete(UUID uuid);
+    KeycloakUserDTO getByUuid(UUID uuid);
+    List<KeycloakUserDTO> getByEmail(String email);
+    void deleteById(UUID uuid);
+    KeycloakUserDTO updateById(UpdateUserDTO updateUserDTO, UUID uuid);
 }

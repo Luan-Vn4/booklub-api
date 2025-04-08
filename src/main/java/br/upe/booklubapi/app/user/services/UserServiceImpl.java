@@ -1,69 +1,138 @@
 package br.upe.booklubapi.app.user.services;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
-import br.upe.booklubapi.app.user.dtos.UserDTO;
-import br.upe.booklubapi.app.user.dtos.mappers.CreateUserDTOMapper;
-import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
-import br.upe.booklubapi.domain.users.entities.User;
-import br.upe.booklubapi.domain.users.repository.UserRepository;
-import br.upe.booklubapi.presentation.exceptions.UserNotFoundException;
+import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
+import br.upe.booklubapi.app.user.dtos.mappers.KeycloakUserDTOMapper;
+import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
+import br.upe.booklubapi.config.KeycloakProperties;
+import br.upe.booklubapi.domain.users.entities.KeycloakUser;
+import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
+import br.upe.booklubapi.utils.KeycloakUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+	private final KeycloakProperties keycloakProperties;
+	private final KeycloakUtils keycloakUtils;
+	private final UpdateUserDTOMapper updateUserDTOMapper;
+	private final KeycloakUserDTOMapper keycloakUserDTOMapper;
 
-    private CreateUserDTOMapper createUserDTOMapper;
-    private UserDTOMapper userDTOMapper;
-    private UserRepository userRepository;
-    
-    @Override
-    public CreateUserDTO create(CreateUserDTO userDTO) {    
-        User user = createUserDTOMapper.toEntity(userDTO);
+	JwtDecoder jwtDecoder;
 
-        return createUserDTOMapper.toDto(userRepository.save(user));
-    }
+	@Override
+	public KeycloakUserDTO getByUuid(UUID uuid) {
+		String adminToken = keycloakUtils.getAdminToken();
 
-    @Override
-    public UserDTO getByUuid(UUID uuid) {
-        Optional<User> userOptional = userRepository.findById(uuid);
-        if (userOptional.isEmpty()) throw new UserNotFoundException(uuid);
+		KeycloakUserDTO userDTO = WebClient.create()
+				.get()
+				.uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+						+ "/users/" + uuid)
+				.header("Authorization", "Bearer " + adminToken)
+				.retrieve()
+				.bodyToMono(KeycloakUserDTO.class)
+				.block();
 
-        return userDTOMapper.toDto(userOptional.get());
-    }
+		return userDTO;
+	}
 
-    @Override
-    public UserDTO getByEmail(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isEmpty()) throw new UserNotFoundException(email);
+	@Override
+	public List<KeycloakUserDTO> getByEmail(String email) {
+		String adminToken = keycloakUtils.getAdminToken();
 
-        return userDTOMapper.toDto(userOptional.get());
-    }
+		List<KeycloakUserDTO> users = WebClient.create()
+				.get()
+				.uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+						+ "/users?email=" + email)
+				.header("Authorization", "Bearer " + adminToken)
+				.retrieve()
+				.bodyToFlux(KeycloakUserDTO.class)
+				.collectList()
+				.block();
 
-    @Override   
-    public UserDTO update(CreateUserDTO newUserDTO, UUID uuid) {
-        Optional<User> originalUserOptional = userRepository.findById(uuid);
-        if (originalUserOptional.isEmpty()) throw new UserNotFoundException(uuid);
+		return users;
+	}
 
-        User originalUser = originalUserOptional.get();
+	@Override
+	public void deleteById(UUID uuid) {
+		userHasPermission(uuid);
 
-        User newUser = createUserDTOMapper.partialUpdate(newUserDTO, originalUser);
-        
-        return userDTOMapper.toDto(userRepository.save(newUser));
-    }
+		String adminToken = keycloakUtils.getAdminToken();
+		WebClient.create()
+				.delete()
+				.uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+						+ "/users/" + uuid)
+				.header("Authorization", "Bearer " + adminToken)
+				.retrieve()
+				.toBodilessEntity()
+				.block();
+	}
 
-    @Override
-    public void delete(UUID uuid) {
-        Optional<User> user = userRepository.findById(uuid);
+	@Override
+	@Transactional
+	public KeycloakUserDTO updateById(UpdateUserDTO updateUserDTO, UUID uuid) {
+		userHasPermission(uuid);
+		
+		KeycloakUserDTO userToBeUpdatedDTO = this.getByUuid(uuid);
 
-        if (user.isEmpty()) throw new UserNotFoundException(uuid);
+		KeycloakUser userToBeUpdated = keycloakUserDTOMapper.toEntity(userToBeUpdatedDTO);
 
-        userRepository.deleteById(uuid);
-    }
-    
+		String adminToken = keycloakUtils.getAdminToken();
+
+		userToBeUpdated = updateUserDTOMapper.partialUpdate(updateUserDTO, userToBeUpdated);
+
+		String user = "{"
+				+ "\"username\": \"" + userToBeUpdated.getUsername() + "\","
+				+ "\"email\": \"" + userToBeUpdated.getEmail() + "\","
+				+ "\"firstName\": \"" + userToBeUpdated.getFirstName() + "\","
+				+ "\"lastName\": \"" + userToBeUpdated.getLastName() + "\","
+				+ "\"enabled\": true,"
+				+ "\"attributes\": {"
+				+ "\"imageUrl\": [\"" + userToBeUpdated.getAttributes().get("imageUrl").get(0) + "\"]"
+				+ "}"
+				+ "}";
+
+		WebClient.create()
+				.put()
+				.uri(keycloakProperties.getClientUrl() + "/admin/realms/" + keycloakProperties.getClientRealm()
+						+ "/users/" + uuid)
+				.header("Authorization", "Bearer " + adminToken)
+				.header("Content-Type", "application/json")
+				.bodyValue(user)
+				.retrieve()
+				.toBodilessEntity()
+				.block();
+
+		return keycloakUserDTOMapper.toDto(userToBeUpdated);
+	}
+
+	private String getUserToken() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.currentRequestAttributes()).getRequest();
+
+		return request.getHeader("Authorization").substring(7);
+	}
+
+	private void userHasPermission(UUID idOfUserObjectReceivingChanges) {
+		String userToken = getUserToken();
+		String requestIssuerId = jwtDecoder.decode(userToken).getSubject();
+		
+		if (!requestIssuerId.equals(idOfUserObjectReceivingChanges.toString())) {
+			throw new UserHasNoPermissionToException("alterar usuário de id" + idOfUserObjectReceivingChanges);
+		}
+	}
+
+	
+
 }

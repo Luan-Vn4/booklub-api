@@ -20,7 +20,7 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - KC_DB=postgres
-      - KC_DB_URL_HOST=booklub-postgres  # Ensure this is the service name
+      - KC_DB_URL_HOST=booklub-postgres
       - KC_DB_URL_DATABASE=booklub
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=1234
@@ -32,7 +32,5 @@ services:
       - postgresql
     networks:
       - booklub-network
-
 networks:
   booklub-network:
-
