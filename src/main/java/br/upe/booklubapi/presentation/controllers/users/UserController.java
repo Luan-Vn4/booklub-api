@@ -18,6 +18,7 @@ import br.upe.booklubapi.app.user.services.UserService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RequestMapping("/api/v1/user")
 @RestController
@@ -26,23 +27,22 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<KeycloakUserDTO> getUserById(@PathVariable UUID uuid) {
+    public ResponseEntity<Mono<KeycloakUserDTO>> getUserById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.getByUuid(uuid));
     }
 
     @GetMapping(params="email")
-    public ResponseEntity<List<KeycloakUserDTO>> getUserByEmail(@PathParam("email") String email) {
+    public ResponseEntity<Mono<List<KeycloakUserDTO>>> getUserByEmail(@PathParam("email") String email) {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable UUID uuid) {
-        userService.deleteById(uuid);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Mono<Void>> deleteUserById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(userService.deleteById(uuid));
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<KeycloakUserDTO> updateUserById(@Valid @RequestBody UpdateUserDTO user, @PathVariable UUID uuid) {
+    public ResponseEntity<Mono<Void>> updateUserById(@Valid @RequestBody UpdateUserDTO user, @PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.updateById(user, uuid));
     }
 }

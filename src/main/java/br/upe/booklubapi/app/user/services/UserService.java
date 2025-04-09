@@ -5,11 +5,14 @@ import java.util.UUID;
 
 import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
-import br.upe.booklubapi.app.user.dtos.UserDTO;
+import reactor.core.publisher.Mono;
 
 public interface UserService {
-    KeycloakUserDTO getByUuid(UUID uuid);
-    List<KeycloakUserDTO> getByEmail(String email);
-    void deleteById(UUID uuid);
-    KeycloakUserDTO updateById(UpdateUserDTO updateUserDTO, UUID uuid);
+    Mono<KeycloakUserDTO> getByUuid(UUID uuid);
+
+    Mono<List<KeycloakUserDTO>> getByEmail(String email);
+
+    Mono<Void> deleteById(UUID uuid);
+
+    Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid);
 }
