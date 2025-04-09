@@ -12,6 +12,7 @@ import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -20,12 +21,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<CreateUserDTO> register(@Valid @RequestBody CreateUserDTO user) {
+    public ResponseEntity<Mono<Void>> register(@Valid @RequestBody CreateUserDTO user) {
         return ResponseEntity.ok(authService.register(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<KeycloakTokenDTO> login(@Valid @RequestBody AuthBody user) {
+    public ResponseEntity<Mono<KeycloakTokenDTO>> login(@Valid @RequestBody AuthBody user) {
         return ResponseEntity.ok(authService.login(user));
     }
 }

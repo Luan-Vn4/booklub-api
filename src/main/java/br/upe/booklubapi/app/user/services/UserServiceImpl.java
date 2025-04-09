@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
