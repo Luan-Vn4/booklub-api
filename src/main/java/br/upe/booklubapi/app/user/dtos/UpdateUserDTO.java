@@ -1,7 +1,6 @@
 package br.upe.booklubapi.app.user.dtos;
 
 import jakarta.annotation.Nullable;
-import org.springframework.web.multipart.MultipartFile;
 
 public record UpdateUserDTO(
     @Nullable
@@ -13,5 +12,5 @@ public record UpdateUserDTO(
     @Nullable
     String lastName,
     @Nullable
-    MultipartFile image
+    String imageUrl
 ) {}
