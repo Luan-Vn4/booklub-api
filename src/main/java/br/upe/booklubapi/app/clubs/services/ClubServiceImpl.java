@@ -21,7 +21,7 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubDTOMapper clubDTOMapper;
 
-    private final UpdateClubDTOMapper updateClubDTOMapper;
+    private final UpdateClubDTOMapper updateClubDTOMapper;  
 
     private final ClubRepository clubRepository;
 
