@@ -1,7 +1,6 @@
 package br.upe.booklubapi.config;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -20,22 +19,18 @@ public class SecurityConfig {
     private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
-        return http
-            .authorizeHttpRequests(authorize ->
-                authorize.anyRequest().authenticated()
-            )
-            .csrf(CsrfConfigurer::disable)
-            .oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwt ->
-                    jwt.jwtAuthenticationConverter(jwtAuthConverter)
-                )
-            )
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(STATELESS)
-            )
-            .build();
-    }
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthConverter)))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(STATELESS));
 
+        return http.build();
+    }
 }

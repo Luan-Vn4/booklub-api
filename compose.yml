@@ -12,7 +12,6 @@ services:
       - ./docker-volumes/postgresql:/var/lib/postgresql/data
     networks:
       - booklub-network
-
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
@@ -20,7 +19,7 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
       - KC_DB=postgres
-      - KC_DB_URL_HOST=booklub-postgres  # Ensure this is the service name
+      - KC_DB_URL_HOST=booklub-postgres
       - KC_DB_URL_DATABASE=booklub
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=1234
@@ -32,7 +31,6 @@ services:
       - postgresql
     networks:
       - booklub-network
-
   minio:
     image: quay.io/minio/minio
     container_name: booklub-minio
@@ -48,4 +46,3 @@ services:
 
 networks:
   booklub-network:
-
