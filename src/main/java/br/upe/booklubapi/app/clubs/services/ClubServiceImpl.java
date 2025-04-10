@@ -5,7 +5,6 @@ import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.entities.QClub;
 import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
-import br.upe.booklubapi.domain.core.gateways.mediastorage.MediaStorageGateway;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,7 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubDTOMapper clubDTOMapper;
 
-    private final UpdateClubDTOMapper updateClubDTOMapper;
+    private final UpdateClubDTOMapper updateClubDTOMapper;  
 
     private final ClubRepository clubRepository;
 
