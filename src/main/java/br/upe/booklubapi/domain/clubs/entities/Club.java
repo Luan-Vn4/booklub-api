@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -43,6 +44,14 @@ public class Club {
     @JoinColumn(name="owner_id")
     @NotNull
     private User owner;
+
+    @ManyToMany
+    @JoinTable(
+        name="clubs_users",
+        joinColumns=@JoinColumn(name="club_id"),
+        inverseJoinColumns=@JoinColumn(name="user_id")
+    )
+    private Set<User> members;
 
     @Override
     public String toString() {
