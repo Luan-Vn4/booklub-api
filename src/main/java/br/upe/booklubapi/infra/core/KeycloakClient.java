@@ -94,6 +94,26 @@ public class KeycloakClient {
                 .bodyToMono(Void.class);
     }
 
+    public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UUID uuid) {
+        String adminToken = keycloakUtils.getAdminToken();
+
+        String user = "{"
+                + "\"attributes\": {"
+                + "\"imageUrl\": [\"" + newProfilePicturePath + "\"]"
+                + "}"
+                + "}";
+
+        return keycloakWebClient
+                .put()
+                .uri("/admin/realms/" + keycloakProperties.getClientRealm()
+                        + "/users/" + uuid)
+                .header("Authorization", "Bearer " + adminToken)
+                .header("Content-Type", "application/json")
+                .bodyValue(user)
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
+
     public Mono<Void> register(CreateUserDTO userDTO) {
         String adminToken = keycloakUtils.getAdminToken();
 
@@ -109,7 +129,7 @@ public class KeycloakClient {
                 + "\"temporary\": false"
                 + "}],"
                 + "\"attributes\": {"
-                + "\"imageUrl\": \"" + userDTO.imageUrl() + "\""
+                + "\"imageUrl\": \"" + null + "\""
                 + "}"
                 + "}";
 
