@@ -91,7 +91,7 @@ public class ClubServiceImpl implements ClubService {
     public PagedModel<UserDTO> findAllMembers(UUID clubId, Pageable pageable) {
         return new PagedModel<>(
             clubRepository.findAllMembers(clubId, Expressions.TRUE, pageable)
-                .map(userDTOMapper::toDto)
+                .map(userDTOMapper::toDTO)
         );
     }
 
