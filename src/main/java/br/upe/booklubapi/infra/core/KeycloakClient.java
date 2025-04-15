@@ -1,6 +1,9 @@
 package br.upe.booklubapi.infra.core;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,13 +14,13 @@ import br.upe.booklubapi.utils.KeycloakUtils;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
-import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
 import reactor.core.publisher.Mono;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 
 import br.upe.booklubapi.config.KeycloakProperties;
-import br.upe.booklubapi.domain.users.entities.KeycloakUser;
+import br.upe.booklubapi.domain.users.entities.User;
 
 import java.util.UUID;
 
@@ -32,7 +35,7 @@ public class KeycloakClient {
 
     private final KeycloakProperties keycloakProperties;
 
-    public Mono<KeycloakUserDTO> getUserById(UUID uuid) {
+    public Mono<UserDTO> getUserById(UUID uuid) {
         String adminToken = keycloakUtils.getAdminToken();
 
         return keycloakWebClient
@@ -41,10 +44,10 @@ public class KeycloakClient {
                         + "/users/" + uuid)
                 .header("Authorization", "Bearer " + adminToken)
                 .retrieve()
-                .bodyToMono(KeycloakUserDTO.class);
+                .bodyToMono(UserDTO.class);
     }
 
-    public Mono<List<KeycloakUserDTO>> getUserByEmail(String email) {
+    public Mono<List<UserDTO>> getUserByEmail(String email) {
         String adminToken = keycloakUtils.getAdminToken();
 
         return keycloakWebClient
@@ -53,7 +56,7 @@ public class KeycloakClient {
                         + "/users?email=" + email)
                 .header("Authorization", "Bearer " + adminToken)
                 .retrieve()
-                .bodyToFlux(KeycloakUserDTO.class)
+                .bodyToFlux(UserDTO.class)
                 .collectList();
     }
 
@@ -69,7 +72,7 @@ public class KeycloakClient {
                 .bodyToMono(Void.class);
     }
 
-    public Mono<Void> updateUserById(KeycloakUser updatedUser, UUID uuid) {
+    public Mono<Void> updateUserById(User updatedUser, UUID uuid) {
         String adminToken = keycloakUtils.getAdminToken();
 
         String user = "{"
@@ -79,7 +82,7 @@ public class KeycloakClient {
                 + "\"lastName\": \"" + updatedUser.getLastName() + "\","
                 + "\"enabled\": true,"
                 + "\"attributes\": {"
-                + "\"imageUrl\": [\"" + updatedUser.getAttributes().get("imageUrl").get(0) + "\"]"
+                + "\"imageUrl\": [\"" + updatedUser.getAttributes().get("imageUrl") + "\"]"
                 + "}"
                 + "}";
 
@@ -94,19 +97,24 @@ public class KeycloakClient {
                 .bodyToMono(Void.class);
     }
 
-    public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UUID uuid) {
+    public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UserDTO saveduser, UUID id) {
         String adminToken = keycloakUtils.getAdminToken();
 
         String user = "{"
+                + "\"username\": \"" + saveduser.username() + "\","
+                + "\"email\": \"" + saveduser.email() + "\","
+                + "\"firstName\": \"" + saveduser.firstName() + "\","
+                + "\"lastName\": \"" + saveduser.lastName() + "\","
+                + "\"enabled\": true,"
                 + "\"attributes\": {"
                 + "\"imageUrl\": [\"" + newProfilePicturePath + "\"]"
                 + "}"
                 + "}";
-
+        
         return keycloakWebClient
                 .put()
                 .uri("/admin/realms/" + keycloakProperties.getClientRealm()
-                        + "/users/" + uuid)
+                        + "/users/" + id)
                 .header("Authorization", "Bearer " + adminToken)
                 .header("Content-Type", "application/json")
                 .bodyValue(user)

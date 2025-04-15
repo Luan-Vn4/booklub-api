@@ -1,55 +1,111 @@
 package br.upe.booklubapi.domain.users.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name="users")
+@Entity
+@Table(name = "user_entity")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private UUID id;
-    
-    @Column(name="image_url")
-    private String imageUrl;
 
-    @NotNull(message="Email é necessário para o cadastro do usuário") @Email  @Size(max = 255)
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @NotNull(message="Passowrd é necessário para o cadastro do usuário") @Size(max = 60)
-    @Column(name="password", columnDefinition="bpchar(60)")
+    @Column(name = "password")
     private String password;
 
-    @NotNull(message="Username é necessário para o cadastro do usuário") @Size(max = 50)
-    @Column(name="username")
+    @Column(name = "username")
     private String username;
 
-    @NotNull(message="Primeiro nome é necessário para o cadastro do usuário") @Size(max = 50)
-    @Column(name="first_name")
+    @Column(name = "firstName")
     private String firstName;
-    
-    @NotNull(message="Sobrenome é necessário para cadastro do usuário") @Size(max = 100)
-    @Column(name="last_name")
+
+    @Column(name = "lastName")
     private String lastName;
 
+    @ElementCollection
+    @CollectionTable(name = "user_attribute", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
+    private Map<String, String> attributes;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
 }

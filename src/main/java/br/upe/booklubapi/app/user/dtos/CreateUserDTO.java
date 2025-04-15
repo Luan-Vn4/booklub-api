@@ -6,10 +6,15 @@ import io.micrometer.common.lang.Nullable;
 
 public record CreateUserDTO(
     String username,
+
     String email,
+
     String firstName,
+    
     String lastName,
+
     @Nullable
     MultipartFile image,
+    
     String password
 ) {}

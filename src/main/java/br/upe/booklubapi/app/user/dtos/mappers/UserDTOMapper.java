@@ -1,36 +1,17 @@
 package br.upe.booklubapi.app.user.dtos.mappers;
 
-import br.upe.booklubapi.app.user.services.UserMediaStorageService;
-import lombok.AllArgsConstructor;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.domain.users.entities.User;
-import org.springframework.stereotype.Component;
 
 @Mapper(
     componentModel=MappingConstants.ComponentModel.SPRING,
-    unmappedTargetPolicy= ReportingPolicy.IGNORE,
-    uses={UserDTOMapperHelper.class}
+    unmappedTargetPolicy= ReportingPolicy.IGNORE
 )
 public interface UserDTOMapper {
-
-    @Mapping(
-        target="imageUrl",
-        qualifiedByName="resolveImageUrl"
-    )
-    UserDTO toDto(User user);
-
-}
-
-@Component
-@AllArgsConstructor
-class UserDTOMapperHelper {
-
-    private final UserMediaStorageService userMediaStorageService;
-
-    @Named("resolveImageUrl")
-    public String resolveImageUrl(String profilePicPath) {
-        return userMediaStorageService.getProfilePictureUrl(profilePicPath);
-    }
-
+    User toEntity(UserDTO userDTO);
+    UserDTO toDTO(User user);
 }

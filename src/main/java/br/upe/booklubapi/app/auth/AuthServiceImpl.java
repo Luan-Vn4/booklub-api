@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
-import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.services.UserMediaStorageService;
-import br.upe.booklubapi.domain.users.entities.KeycloakUser;
+import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.infra.core.KeycloakClient;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -19,7 +19,6 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final KeycloakClient keycloakClient;
-    private final CreateUserDTOMapper createUserDTOMapper;
     private final UserMediaStorageService userMediaStorageService;
 
     @Override
@@ -28,13 +27,13 @@ public class AuthServiceImpl implements AuthService {
             return keycloakClient.register(userDTO);
         }
         
-        keycloakClient.register(userDTO);
-        KeycloakUserDTO savedUser = keycloakClient.getUserByEmail(userDTO.email()).block().get(0); //Trocar isso aqui pra usar o JPA dps
+        keycloakClient.register(userDTO).block();
+        UserDTO savedUser = keycloakClient.getUserByEmail(userDTO.email()).block().get(0); //Trocar isso aqui pra usar o JPA dps
         UUID userUUID = UUID.fromString(savedUser.id());
 
         String imagePath = userMediaStorageService.saveProfilePicture(userDTO.image(), userUUID);
-        
-        return keycloakClient.updateProfilePicturePathById(imagePath, userUUID);
+
+        return keycloakClient.updateProfilePicturePathById(imagePath, savedUser, userUUID);
     }
 
     @Override
@@ -42,4 +41,3 @@ public class AuthServiceImpl implements AuthService {
         return keycloakClient.login(authBody);
     }
 }
-,
