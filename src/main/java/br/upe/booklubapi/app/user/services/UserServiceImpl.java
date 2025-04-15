@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
-import br.upe.booklubapi.app.user.dtos.mappers.KeycloakUserDTOMapper;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
+import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import reactor.core.publisher.Mono;
-import br.upe.booklubapi.domain.users.entities.KeycloakUser;
+import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -24,18 +24,18 @@ import br.upe.booklubapi.infra.core.KeycloakClient;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 	private final UpdateUserDTOMapper updateUserDTOMapper;
-	private final KeycloakUserDTOMapper keycloakUserDTOMapper;
+	private final UserDTOMapper userDTOMapper;
 	private final KeycloakClient keycloakClient;
 
 	JwtDecoder jwtDecoder;
 
 	@Override
-	public Mono<KeycloakUserDTO> getByUuid(UUID uuid) {
+	public Mono<UserDTO> getByUuid(UUID uuid) {
 		return keycloakClient.getUserById(uuid);
 	}
 
 	@Override
-	public Mono<List<KeycloakUserDTO>> getByEmail(String email) {
+	public Mono<List<UserDTO>> getByEmail(String email) {
 		return keycloakClient.getUserByEmail(email);
 	}
 
@@ -50,9 +50,9 @@ public class UserServiceImpl implements UserService {
 	public Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid) {
 		userHasPermission(uuid);
 
-		Mono<KeycloakUserDTO> userToBeUpdatedDTO = this.getByUuid(uuid);
+		Mono<UserDTO> userToBeUpdatedDTO = this.getByUuid(uuid);
 
-		KeycloakUser userToBeUpdated = keycloakUserDTOMapper.toEntity(userToBeUpdatedDTO.block());
+		User userToBeUpdated = userDTOMapper.toEntity(userToBeUpdatedDTO.block());
 
 		userToBeUpdated = updateUserDTOMapper.partialUpdate(updateUserDTO, userToBeUpdated);
 

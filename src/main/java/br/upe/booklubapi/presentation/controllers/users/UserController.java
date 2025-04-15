@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
-import org.springframework.http.MediaType;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.upe.booklubapi.app.user.dtos.KeycloakUserDTO;
-import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.services.UserService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -29,12 +28,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<Mono<KeycloakUserDTO>> getUserById(@PathVariable UUID uuid) {
+    public ResponseEntity<Mono<UserDTO>> getUserById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.getByUuid(uuid));
     }
 
     @GetMapping(params="email")
-    public ResponseEntity<Mono<List<KeycloakUserDTO>>> getUserByEmail(@PathParam("email") String email) {
+    public ResponseEntity<Mono<List<UserDTO>>> getUserByEmail(@PathParam("email") String email) {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 
