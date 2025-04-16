@@ -36,14 +36,14 @@ public interface UpdateUserDTOMapper {
 @AllArgsConstructor
 class UpdateUserDTOHelper {
     private UserMediaStorageService userMediaStorageService;
-    private KeycloakClient keycloakClient;
 
     @Named("imageUrltoAttributes")
     public Map<String, String> handleImageUrlMapping(UpdateUserDTO updateUserDTO) {
-
-        UserDTO userDTO = keycloakClient.getUserByEmail(updateUserDTO.email()).block().get(0);
-
-        String imagePath = userMediaStorageService.saveProfilePicture(updateUserDTO.image(), UUID.fromString(userDTO.id()));
+        if(updateUserDTO.image() == null) {
+            return null;
+        }
+        //Aqui n ta pegando o id do user em questao
+        String imagePath = userMediaStorageService.saveProfilePicture(updateUserDTO.image(), updateUserDTO.id());
 
         return Map.of("imageUrl", imagePath);
     }

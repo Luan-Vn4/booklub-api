@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
@@ -53,6 +54,14 @@ public class UserServiceImpl implements UserService {
 		Mono<UserDTO> userToBeUpdatedDTO = this.getByUuid(uuid);
 
 		User userToBeUpdated = userDTOMapper.toEntity(userToBeUpdatedDTO.block());
+
+		updateUserDTO = new UpdateUserDTO(
+				userToBeUpdated.getId(),
+				updateUserDTO.username(),
+				updateUserDTO.email(),
+				updateUserDTO.firstName(),
+				updateUserDTO.lastName(),
+				updateUserDTO.image());
 
 		userToBeUpdated = updateUserDTOMapper.partialUpdate(updateUserDTO, userToBeUpdated);
 

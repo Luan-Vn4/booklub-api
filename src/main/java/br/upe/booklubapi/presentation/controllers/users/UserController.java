@@ -6,10 +6,13 @@ import java.util.UUID;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,8 +45,8 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteById(uuid));
     }
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<Mono<Void>> updateUserById(@Valid @RequestBody UpdateUserDTO user, @PathVariable UUID uuid) {
+    @PutMapping(value="/{uuid}", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Mono<Void>> updateUserById(@Valid @ModelAttribute UpdateUserDTO user, @PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.updateById(user, uuid));
     }
 }
