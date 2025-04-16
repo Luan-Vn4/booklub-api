@@ -1,10 +1,9 @@
-package br.upe.booklubapi.config;
+package br.upe.booklubapi.config.security;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
-import br.upe.booklubapi.config.KeycloakProperties;
 import lombok.AllArgsConstructor;
 
 @Configuration

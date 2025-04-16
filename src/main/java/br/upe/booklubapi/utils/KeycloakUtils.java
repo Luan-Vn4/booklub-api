@@ -3,7 +3,7 @@ package br.upe.booklubapi.utils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.JsonNode;
-import br.upe.booklubapi.config.KeycloakProperties;
+import br.upe.booklubapi.config.security.KeycloakProperties;
 import lombok.AllArgsConstructor;
 
 @Component

@@ -1,4 +1,4 @@
-package br.upe.booklubapi.config;
+package br.upe.booklubapi.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
