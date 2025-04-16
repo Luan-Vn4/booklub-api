@@ -24,14 +24,6 @@ public interface CreateClubDTOMapper {
         target="creationDate",
         expression="java(createClubDTOMapperHelpers.createDate())"
     )
-    @Mapping(
-        target="imageUrl",
-        expression=("""
-            java(createClubDTOMapperHelpers.imageToImageUrl(
-                createClubDTO.image(), createClubDTO.name()
-            ))
-        """)
-    )
     Club toEntity(CreateClubDTO createClubDTO);
 
 }
@@ -41,8 +33,6 @@ public interface CreateClubDTOMapper {
 class CreateClubDTOMapperHelpers {
 
     private final UserRepository userRepository;
-
-    private final ClubMediaStorageService clubMediaStorageService;
 
     @Named("ownerIdToOwner")
     public @Nullable User ownerIdToOwner(UUID ownerId) {
@@ -55,10 +45,6 @@ class CreateClubDTOMapperHelpers {
 
     public LocalDate createDate() {
         return LocalDate.now();
-    }
-
-    public String imageToImageUrl(MultipartFile image, String name) {
-        return clubMediaStorageService.saveClubPicture(image, name);
     }
 
 }

@@ -29,6 +29,8 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
 
+    private final ClubMediaStorageService clubMediaStorageService;
+
     private final QClub club = QClub.club;
 
     @Override
@@ -36,9 +38,18 @@ public class ClubServiceImpl implements ClubService {
     public ClubDTO create(CreateClubDTO dto) {
         final Club club = createClubDTOMapper.toEntity(dto);
 
-        System.out.println(club);
+        final Club created = clubRepository.save(club);
 
-        return clubDTOMapper.toDto(clubRepository.save(club));
+        final String imagePath = clubMediaStorageService.saveClubPicture(
+            dto.image(),
+            created.getId()
+        );
+
+        created.setImageUrl(imagePath);
+
+        clubRepository.save(club);
+
+        return clubDTOMapper.toDto(created);
     }
 
     @Override
@@ -47,9 +58,19 @@ public class ClubServiceImpl implements ClubService {
         Club current = clubRepository.findById(id).orElseThrow(
             () -> new ClubNotFoundException(id)
         );
-        return clubDTOMapper.toDto(
-            updateClubDTOMapper.partialUpdate(dto, current)
+
+        final Club updated = updateClubDTOMapper.partialUpdate(dto, current);
+
+        final String path = clubMediaStorageService.saveClubPicture(
+            dto.image(),
+            updated.getId()
         );
+
+        updated.setImageUrl(path);
+
+        clubRepository.save(current);
+
+        return clubDTOMapper.toDto(updated);
     }
 
     @Override

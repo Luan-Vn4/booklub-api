@@ -7,8 +7,10 @@ import br.upe.booklubapi.domain.users.entities.User;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
+@Repository
 public interface ClubRepository
     extends CrudRepository<Club, UUID>, QueryableRepository<Club> {
 
