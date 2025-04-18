@@ -7,6 +7,7 @@ import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.entities.QClub;
 import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
+import br.upe.booklubapi.domain.users.repository.UserRepository;
 import com.querydsl.core.types.dsl.Expressions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -111,7 +112,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public PagedModel<UserDTO> findAllMembers(UUID clubId, Pageable pageable) {
         return new PagedModel<>(
-            clubRepository.findAllMembers(clubId, Expressions.TRUE, pageable)
+            clubRepository.findAllClubMembers(clubId, Expressions.TRUE, pageable)
                 .map(userDTOMapper::toDTO)
         );
     }

@@ -33,7 +33,7 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
     private EntityManager em;
 
     @Override
-    public Page<User> findAllMembers(
+    public Page<User> findAllClubMembers(
         UUID clubId,
         Predicate predicate,
         Pageable pageable
@@ -41,20 +41,50 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
         final QClub club = QClub.club;
         final QUser user = QUser.user;
 
-        Long count = new JPAQuery<>(em)
+        final Long count = new JPAQuery<>(em)
             .select(user.count())
             .from(club)
             .join(club.members, user)
             .where(club.id.eq(clubId).and(predicate))
             .fetchOne();
 
-        System.out.println("Entrou aqui!");
-
-        List<User> result = new JPAQuery<>(em)
+        final List<User> result = new JPAQuery<>(em)
             .select(user)
             .from(club)
             .join(club.members, user)
             .where(club.id.eq(clubId).and(predicate))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        return new PageImpl<>(
+            result,
+            pageable,
+            Objects.requireNonNullElse(count, 0L)
+        );
+    }
+
+    @Override
+    public Page<Club> findAllUserClubs(
+        UUID userId,
+        Predicate predicate,
+        Pageable pageable
+    ) {
+        final QClub club = QClub.club;
+        final QUser user = QUser.user;
+
+        final Long count = new JPAQuery<>(em)
+            .select(club.count())
+            .from(user)
+            .join(user.clubs, club)
+            .where(user.clubs.contains(club).and(predicate))
+            .fetchOne();
+
+        final List<Club> result = new JPAQuery<>(em)
+            .select(club)
+            .from(user)
+            .join(user.clubs, club)
+            .where(user.clubs.contains(club).and(predicate))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
