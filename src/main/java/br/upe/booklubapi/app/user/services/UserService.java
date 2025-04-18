@@ -13,7 +13,5 @@ public interface UserService {
 
     Mono<List<UserDTO>> getByEmail(String email);
 
-    Mono<Void> deleteById(UUID uuid);
-
     Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid);
 }

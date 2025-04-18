@@ -40,11 +40,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<Mono<Void>> deleteUserById(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(userService.deleteById(uuid));
-    }
-
     @PutMapping(value="/{uuid}", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Mono<Void>> updateUserById(@Valid @ModelAttribute UpdateUserDTO user, @PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.updateById(user, uuid));

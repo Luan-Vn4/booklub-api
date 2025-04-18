@@ -16,6 +16,7 @@ import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import reactor.core.publisher.Mono;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
+import br.upe.booklubapi.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -26,9 +27,9 @@ import br.upe.booklubapi.infra.core.KeycloakClient;
 public class UserServiceImpl implements UserService {
 	private final UpdateUserDTOMapper updateUserDTOMapper;
 	private final UserDTOMapper userDTOMapper;
+	private final UserMediaStorageService userMediaStorageService;
 	private final KeycloakClient keycloakClient;
-
-	JwtDecoder jwtDecoder;
+	private final UserUtils userUtils;
 
 	@Override
 	public Mono<UserDTO> getByUuid(UUID uuid) {
@@ -41,47 +42,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Mono<Void> deleteById(UUID uuid) {
-		userHasPermission(uuid);
-		return keycloakClient.deleteUserById(uuid);
-	}
-
-	@Override
 	@Transactional
 	public Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid) {
-		userHasPermission(uuid);
+		userUtils.verifyUserPermission(uuid);
 
 		Mono<UserDTO> userToBeUpdatedDTO = this.getByUuid(uuid);
 
 		User userToBeUpdated = userDTOMapper.toEntity(userToBeUpdatedDTO.block());
 
-		updateUserDTO = new UpdateUserDTO(
-				userToBeUpdated.getId(),
-				updateUserDTO.username(),
-				updateUserDTO.email(),
-				updateUserDTO.firstName(),
-				updateUserDTO.lastName(),
-				updateUserDTO.image());
-
 		userToBeUpdated = updateUserDTOMapper.partialUpdate(updateUserDTO, userToBeUpdated);
 
-		return keycloakClient.updateUserById(userToBeUpdated, uuid);
+		keycloakClient.updateUserById(userToBeUpdated, uuid);
+
+		String imagePath = userMediaStorageService.saveProfilePicture(updateUserDTO.image(), uuid);
+
+        return keycloakClient.updateProfilePicturePathById(imagePath, userDTOMapper.toDTO(userToBeUpdated), uuid);
 	}
-
-	private String getUserToken() {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-				.currentRequestAttributes()).getRequest();
-
-		return request.getHeader("Authorization").substring(7);
-	}
-
-	private void userHasPermission(UUID idOfUserObjectReceivingChanges) {
-		String userToken = getUserToken();
-		String requestIssuerId = jwtDecoder.decode(userToken).getSubject();
-
-		if (!requestIssuerId.equals(idOfUserObjectReceivingChanges.toString())) {
-			throw new UserHasNoPermissionToException("alterar usuário de id" + idOfUserObjectReceivingChanges);
-		}
-	}
-
 }

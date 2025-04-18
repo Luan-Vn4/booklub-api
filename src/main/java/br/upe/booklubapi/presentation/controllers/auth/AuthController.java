@@ -1,8 +1,12 @@
 package br.upe.booklubapi.presentation.controllers.auth;
 
+import java.util.UUID;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +34,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Mono<KeycloakTokenDTO>> login(@Valid @RequestBody AuthBody user) {
         return ResponseEntity.ok(authService.login(user));
+    }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<Mono<Void>> deleteUserById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(authService.deleteById(uuid));
     }
 }

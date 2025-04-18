@@ -12,6 +12,7 @@ import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.services.UserMediaStorageService;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.infra.core.KeycloakClient;
+import br.upe.booklubapi.utils.UserUtils;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 public class AuthServiceImpl implements AuthService {
     private final KeycloakClient keycloakClient;
     private final UserMediaStorageService userMediaStorageService;
+    private final UserUtils userUtils;
 
     @Override
     public Mono<Void> register(CreateUserDTO userDTO) { //Essa gambiarra absurda tem que ser feita porque a imagem de perfil tem que ser salva usando o UUID
@@ -40,4 +42,10 @@ public class AuthServiceImpl implements AuthService {
     public Mono<KeycloakTokenDTO> login(AuthBody authBody) {
         return keycloakClient.login(authBody);
     }
+
+    @Override
+	public Mono<Void> deleteById(UUID uuid) {
+		userUtils.verifyUserPermission(uuid);
+		return keycloakClient.deleteUserById(uuid);
+	}
 }
