@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -16,7 +17,7 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
     private final MediaStorageGateway gateway;
 
     @Override
-    public String saveClubPicture(MultipartFile image, String clubName) {
+    public String saveClubPicture(MultipartFile image, UUID clubId) {
         final String extension = StringUtils.getFilenameExtension(
             image.getOriginalFilename()
         );
@@ -31,15 +32,14 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
             );
         }
 
-        final String objectName = generateObjectName(clubName, extension);
+        final String objectName = generateObjectName(clubId, extension);
 
         return gateway.uploadObject("images", objectName, image);
     }
 
-    private String generateObjectName(String clubName, String fileExtension) {
-        final String normalizedName = clubName.replaceAll("\\s+", "_");
+    private String generateObjectName(UUID clubId, String fileExtension) {
         return "/clubs/profile-picture/%s.%s".formatted(
-            normalizedName,
+            clubId.toString(),
             fileExtension
         );
     }

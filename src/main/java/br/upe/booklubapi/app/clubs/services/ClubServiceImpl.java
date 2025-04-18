@@ -1,10 +1,13 @@
 package br.upe.booklubapi.app.clubs.services;
 
 import br.upe.booklubapi.app.clubs.dtos.*;
+import br.upe.booklubapi.app.user.dtos.UserDTO;
+import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.entities.QClub;
 import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
+import com.querydsl.core.types.dsl.Expressions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +23,13 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubDTOMapper clubDTOMapper;
 
+    private final UserDTOMapper userDTOMapper;
+
     private final UpdateClubDTOMapper updateClubDTOMapper;  
 
     private final ClubRepository clubRepository;
+
+    private final ClubMediaStorageService clubMediaStorageService;
 
     private final QClub club = QClub.club;
 
@@ -31,9 +38,18 @@ public class ClubServiceImpl implements ClubService {
     public ClubDTO create(CreateClubDTO dto) {
         final Club club = createClubDTOMapper.toEntity(dto);
 
-        System.out.println(club);
+        final Club created = clubRepository.save(club);
 
-        return clubDTOMapper.toDto(clubRepository.save(club));
+        final String imagePath = clubMediaStorageService.saveClubPicture(
+            dto.image(),
+            created.getId()
+        );
+
+        created.setImageUrl(imagePath);
+
+        clubRepository.save(club);
+
+        return clubDTOMapper.toDto(created);
     }
 
     @Override
@@ -42,9 +58,19 @@ public class ClubServiceImpl implements ClubService {
         Club current = clubRepository.findById(id).orElseThrow(
             () -> new ClubNotFoundException(id)
         );
-        return clubDTOMapper.toDto(
-            updateClubDTOMapper.partialUpdate(dto, current)
+
+        final Club updated = updateClubDTOMapper.partialUpdate(dto, current);
+
+        final String path = clubMediaStorageService.saveClubPicture(
+            dto.image(),
+            updated.getId()
         );
+
+        updated.setImageUrl(path);
+
+        clubRepository.save(current);
+
+        return clubDTOMapper.toDto(updated);
     }
 
     @Override
@@ -71,6 +97,7 @@ public class ClubServiceImpl implements ClubService {
         );
     }
 
+    @Override
     public PagedModel<ClubDTO> findAll(
         QueryClubDTO queryDTO,
         Pageable pageable
@@ -78,6 +105,14 @@ public class ClubServiceImpl implements ClubService {
         return new PagedModel<>(
             clubRepository.findAll(queryDTO.getQuery(club), pageable)
                 .map(clubDTOMapper::toDto)
+        );
+    }
+
+    @Override
+    public PagedModel<UserDTO> findAllMembers(UUID clubId, Pageable pageable) {
+        return new PagedModel<>(
+            clubRepository.findAllMembers(clubId, Expressions.TRUE, pageable)
+                .map(userDTOMapper::toDTO)
         );
     }
 

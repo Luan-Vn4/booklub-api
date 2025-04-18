@@ -3,6 +3,7 @@ package br.upe.booklubapi.app.clubs.services;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ClubMediaStorageService {
 
@@ -12,7 +13,7 @@ public interface ClubMediaStorageService {
         "jpeg"
     );
 
-    String saveClubPicture(MultipartFile file, String clubName);
+    String saveClubPicture(MultipartFile file, UUID clubId);
 
     String getClubPictureUrl(String clubPicturePath);
 

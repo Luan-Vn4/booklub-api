@@ -1,4 +1,4 @@
-package br.upe.booklubapi.config;
+package br.upe.booklubapi.config.security;
 
 import java.util.Collection;
 import java.util.Map;
