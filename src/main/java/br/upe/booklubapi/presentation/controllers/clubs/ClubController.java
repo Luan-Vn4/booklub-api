@@ -2,36 +2,79 @@ package br.upe.booklubapi.presentation.controllers.clubs;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.CreateClubDTO;
+import br.upe.booklubapi.app.clubs.dtos.QueryClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.UpdateClubDTO;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import br.upe.booklubapi.app.clubs.services.ClubService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-@Tag(
-    name="Book Clubs",
-    description="Endpoints to get book clubs"
-)
-public interface ClubController {
+@RestController
+@RequestMapping("api/v1/clubs")
+@AllArgsConstructor
+public class ClubController {
 
-    ResponseEntity<ClubDTO> create(CreateClubDTO dto);
+    private ClubService clubService;
 
-    ResponseEntity<ClubDTO> update(UpdateClubDTO dto, UUID id);
+    @PostMapping(consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ClubDTO> create(
+        @Valid
+        @ModelAttribute
+        CreateClubDTO dto
+    ) {
+        System.out.println(dto.image() != null);
+        return ResponseEntity.ok(clubService.create(dto));
+    }
 
-    ResponseEntity<?> delete(UUID id);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ClubDTO> update(
+        @Valid
+        @ModelAttribute
+        UpdateClubDTO dto,
+        @PathVariable(name="id")
+        UUID id
+    ) {
+        return ResponseEntity.ok(clubService.update(dto, id));
+    }
 
-    ResponseEntity<ClubDTO> findById(UUID id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        clubService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    ResponseEntity<PagedModel<ClubDTO>> search(
+    @GetMapping("/{id}")
+    public ResponseEntity<ClubDTO> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(clubService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedModel<ClubDTO>> search(
+        @RequestParam
         Optional<String> name,
+        @RequestParam
         Optional<LocalDate> startDate,
+        @RequestParam
         Optional<LocalDate> endDate,
+        @RequestParam
         Optional<Boolean> isPrivate,
         Pageable pageable
-    );
+    ) {
+        final var result = clubService.findAll(new QueryClubDTO(
+            name,
+            startDate,
+            endDate,
+            isPrivate,
+            Optional.empty()
+        ), pageable);
+        return ResponseEntity.ok(result);
+    }
 
 }

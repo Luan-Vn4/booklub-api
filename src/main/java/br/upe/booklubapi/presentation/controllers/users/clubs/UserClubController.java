@@ -2,6 +2,7 @@ package br.upe.booklubapi.presentation.controllers.users.clubs;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.QueryClubDTO;
+import br.upe.booklubapi.app.clubs.services.ClubMembersService;
 import br.upe.booklubapi.app.clubs.services.ClubService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +14,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users/{user-id}")
+@RequestMapping("/api/v1/users/{user-id}/clubs")
 @AllArgsConstructor
-public class UserClubControllerImpl {
+public class UserClubController {
 
     private final ClubService clubService;
 
-    @GetMapping("/clubs/owned")
+    private final ClubMembersService clubMembersService;
+
+    @GetMapping("/owned")
     public ResponseEntity<PagedModel<ClubDTO>> findAllOwnedClubs(
         @RequestParam
         Optional<String> name,
