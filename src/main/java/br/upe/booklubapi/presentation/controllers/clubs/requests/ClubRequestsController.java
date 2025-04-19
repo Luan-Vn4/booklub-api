@@ -3,6 +3,8 @@ package br.upe.booklubapi.presentation.controllers.clubs.requests;
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
 import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -14,11 +16,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/clubs/{club-id}/requests")
 @AllArgsConstructor
+@Tag(
+    name="Membership - Clubs - Requests",
+    description="Operations for managing club membership requests"
+)
 public class ClubRequestsController {
 
     private final ClubMembersService clubMembersService;
 
     @GetMapping
+    @Operation(
+        summary="Search all requests to join club"
+    )
     public ResponseEntity<PagedModel<ClubPendingEntry>> findAllClubRequests(
         @PathVariable("club-id")
         UUID clubId,
@@ -34,6 +43,9 @@ public class ClubRequestsController {
     }
 
     @PostMapping("/{user-id}/accept")
+    @Operation(
+        summary="Accept a request to join a club"
+    )
     public ResponseEntity<String> acceptRequest(
         @PathVariable("club-id")
         UUID clubId,
@@ -48,6 +60,9 @@ public class ClubRequestsController {
     }
 
     @PostMapping("/{user-id}/deny")
+    @Operation(
+        summary="Deny a request to join a club"
+    )
     public ResponseEntity<String> denyRequest(
         @PathVariable("club-id")
         UUID clubId,

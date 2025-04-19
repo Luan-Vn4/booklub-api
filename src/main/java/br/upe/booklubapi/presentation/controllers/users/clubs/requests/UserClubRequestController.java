@@ -3,6 +3,8 @@ package br.upe.booklubapi.presentation.controllers.users.clubs.requests;
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
 import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -13,11 +15,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/users/{user-id}/requests")
 @AllArgsConstructor
+@Tag(
+    name="Membership - Users - Requests",
+    description="Operations for managing user's club requests"
+)
 public class UserClubRequestController {
 
     private final ClubMembersService clubMembersService;
 
     @GetMapping
+    @Operation(
+        summary="Search all requests sent by the user"
+    )
     public ResponseEntity<PagedModel<ClubPendingEntry>> findAllUserRequests(
         @PathVariable("user-id")
         UUID userId,
@@ -33,6 +42,9 @@ public class UserClubRequestController {
     }
 
     @PostMapping("/{club-id}")
+    @Operation(
+        summary="Send a request to join a club"
+    )
     public ResponseEntity<String> sendRequest(
         @PathVariable("club-id")
         UUID clubId,
@@ -47,6 +59,9 @@ public class UserClubRequestController {
     }
 
     @DeleteMapping("/{club-id}/cancel")
+    @Operation(
+        summary="Cancel a request to join a club"
+    )
     public ResponseEntity<String> cancelRequest(
         @PathVariable("club-id")
         UUID clubId,
