@@ -5,6 +5,8 @@ import br.upe.booklubapi.domain.users.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name="club_pending_entries")
@@ -29,7 +31,8 @@ public class ClubPendingEntry {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="entry_type")
+    @Column(name="entry_type", columnDefinition="ENTRY_TYPE")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @NotNull
     private EntryType entryType;
 
