@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
@@ -15,7 +14,7 @@ import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
 import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import reactor.core.publisher.Mono;
 import br.upe.booklubapi.domain.users.entities.User;
-import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
+import br.upe.booklubapi.domain.auth.exceptions.PermissionDeniedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
 		String requestIssuerId = jwtDecoder.decode(userToken).getSubject();
 
 		if (!requestIssuerId.equals(idOfUserObjectReceivingChanges.toString())) {
-			throw new UserHasNoPermissionToException("alterar usuário de id" + idOfUserObjectReceivingChanges);
+			throw new PermissionDeniedException("alterar usuário de id" + idOfUserObjectReceivingChanges);
 		}
 	}
 
