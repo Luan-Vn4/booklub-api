@@ -36,7 +36,11 @@ public interface ClubMembersService {
 
     void declineInvitation(UUID clubId, UUID receiverUserId);
 
+    void cancelInvitation(UUID clubId, UUID receiverUserId);
+
     void declineRequest(UUID clubId, UUID senderUserId);
+
+    void cancelRequest(UUID clubId, UUID senderUserId);
 
     void leaveClub(UUID userId, UUID clubId);
 

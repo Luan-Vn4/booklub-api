@@ -247,6 +247,22 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     }
 
     @Override
+    public void cancelInvitation(UUID clubId, UUID receiverUserId) {
+        final UUID loggedUserId = userUtils.getLoggedUserId();
+        final Club club = getClub(clubId);
+
+        if (!club.getOwner().getId().equals(loggedUserId)) {
+            throw new UnauthorizedClubActionException(
+                "Cancel Invitation",
+                loggedUserId,
+                clubId
+            );
+        }
+
+        declineClubPendingEntry(clubId, receiverUserId);
+    }
+
+    @Override
     @Transactional
     public void declineRequest(UUID clubId, UUID senderUserId) {
         final UUID loggedUserId = userUtils.getLoggedUserId();
@@ -257,6 +273,20 @@ public class ClubMembersServiceImpl implements ClubMembersService {
                 "Decline Request",
                 loggedUserId,
                 clubId
+            );
+        }
+
+        declineClubPendingEntry(clubId, senderUserId);
+    }
+
+    @Override
+    @Transactional
+    public void cancelRequest(UUID clubId, UUID senderUserId) {
+        final UUID loggedUserId = userUtils.getLoggedUserId();
+
+        if (!loggedUserId.equals(senderUserId)) {
+            throw new PermissionDeniedException(
+                "Only the user who sent the request can cancel it."
             );
         }
 

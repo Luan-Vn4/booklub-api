@@ -46,4 +46,18 @@ public class ClubInvitationsController {
         );
     }
 
+    @DeleteMapping("/{user-id}/cancel")
+    public ResponseEntity<String> cancelInvitation(
+        @PathVariable("club-id")
+        UUID clubId,
+        @PathVariable("user-id")
+        UUID userId
+    ) {
+        clubMembersService.sendInvitation(clubId, userId);
+        return ResponseEntity.ok((
+            "Cancelled invitation to user with id \"%s\" to " +
+            "join club with id \"%s\""
+        ).formatted(userId, clubId));
+    }
+
 }

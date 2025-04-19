@@ -46,4 +46,18 @@ public class UserClubRequestController {
         );
     }
 
+    @DeleteMapping("/{club-id}/cancel")
+    public ResponseEntity<String> cancelRequest(
+        @PathVariable("club-id")
+        UUID clubId,
+        @PathVariable("user-id")
+        UUID userId
+    ) {
+        clubMembersService.cancelRequest(clubId, userId);
+        return ResponseEntity.ok(
+            "User with id \"%s\" canceled request to join club with id \"%s\""
+                .formatted(userId, clubId)
+        );
+    }
+
 }
