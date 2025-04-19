@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.upe.booklubapi.app.auth.AuthService;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
-import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
+import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
+import br.upe.booklubapi.app.auth.dto.TokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Mono<KeycloakTokenDTO>> login(@Valid @RequestBody AuthBody user) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthBody user) {
         return ResponseEntity.ok(authService.login(user));
     }
 

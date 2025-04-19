@@ -34,4 +34,8 @@ public class UserUtils {
     public UUID getLoggedUserId() {
         return UUID.fromString(jwtDecoder.decode(getUserToken()).getSubject());
     }
+
+	public UUID getUserIdFromUserToken(String userToken) {
+        return UUID.fromString(jwtDecoder.decode(userToken).getSubject());
+    }
 }

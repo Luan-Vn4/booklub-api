@@ -1,5 +1,6 @@
 package br.upe.booklubapi.infra.core;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +14,14 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 
 import br.upe.booklubapi.utils.KeycloakUtils;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
-import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
+import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
+import br.upe.booklubapi.app.auth.dto.TokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import reactor.core.publisher.Mono;
@@ -42,6 +46,8 @@ public class KeycloakClient {
 
         private final ObjectMapper objectMapper;
 
+        private final UserDTOMapper userDTOMapper;
+
         public Mono<UserDTO> getUserById(UUID uuid) {
                 String adminToken = keycloakUtils.getAdminToken();
 
@@ -51,7 +57,8 @@ public class KeycloakClient {
                                                 + "/users/" + uuid)
                                 .header("Authorization", "Bearer " + adminToken)
                                 .retrieve()
-                                .bodyToMono(UserDTO.class);
+                                .bodyToMono(JsonNode.class)
+                                .map(userDTOMapper::fromJson);
         }
 
         public Mono<List<UserDTO>> getUserByEmail(String email) {
@@ -187,7 +194,7 @@ public class KeycloakClient {
                                 .bodyToMono(Void.class);
         }
 
-        public Mono<KeycloakTokenDTO> login(AuthBody authBody) {
+        public TokenDTO login(AuthBody authBody) {
 
                 MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
                 formData.add("client_id", keycloakProperties.getClientId());
@@ -199,12 +206,19 @@ public class KeycloakClient {
                 String tokenUrl = "/realms/" + keycloakProperties.getClientRealm()
                                 + "/protocol/openid-connect/token";
 
-                return keycloakWebClient.post()
+                JsonNode response = keycloakWebClient.post()
                                 .uri(tokenUrl)
                                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                                 .body(BodyInserters.fromFormData(formData))
                                 .retrieve()
-                                .bodyToMono(KeycloakTokenDTO.class);
+                                .bodyToMono(JsonNode.class)
+                                .block();
+                
+                String accessToken = response.get("access_token").asText();
+                String tokenType = response.get("token_type").asText();
+                Instant expiration = Instant.now().plusSeconds(response.get("expires_in").asInt());
+
+                return new TokenDTO(accessToken, expiration, tokenType);
         }
 
 }

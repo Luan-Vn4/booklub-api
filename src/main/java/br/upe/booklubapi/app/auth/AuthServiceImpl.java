@@ -5,7 +5,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.upe.booklubapi.app.auth.dto.AuthBody;
-import br.upe.booklubapi.app.auth.dto.KeycloakTokenDTO;
+import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
+import br.upe.booklubapi.app.auth.dto.TokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
@@ -39,8 +40,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Mono<KeycloakTokenDTO> login(AuthBody authBody) {
-        return keycloakClient.login(authBody);
+    public AuthResponseDTO login(AuthBody authBody) {
+        TokenDTO tokenDTO = keycloakClient.login(authBody);
+
+        UserDTO userDTO = keycloakClient.getUserById(userUtils.getUserIdFromUserToken(tokenDTO.accessToken())).block();
+
+        return new AuthResponseDTO(userDTO, tokenDTO);
     }
 
     @Override

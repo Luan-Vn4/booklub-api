@@ -14,6 +14,5 @@ public record UserDTO(
         String email,
         String firstName,
         String lastName,
-        @JsonDeserialize(using = AttributeMapDeserializer.class)
-        Map<String, String> attributes) {
+        String imageUrl) {
 }
