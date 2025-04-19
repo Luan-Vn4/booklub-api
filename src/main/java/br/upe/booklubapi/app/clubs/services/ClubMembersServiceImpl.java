@@ -16,8 +16,8 @@ import br.upe.booklubapi.domain.clubs.repositories.ClubPendingEntryRepository;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
-import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
-import br.upe.booklubapi.presentation.exceptions.UserNotFoundException;
+import br.upe.booklubapi.domain.auth.exceptions.PermissionDeniedException;
+import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.utils.UserUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import jakarta.transaction.Transactional;
@@ -158,7 +158,7 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         final User user = getUser(senderUserId);
 
         if (!loggedUserId.equals(senderUserId)) {
-            throw new UserHasNoPermissionToException(
+            throw new PermissionDeniedException(
               "Logged user and request sender do not correspond"
             );
         }
@@ -190,7 +190,7 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         final UUID loggedUserId = userUtils.getLoggedUserId();
 
         if (!loggedUserId.equals(receiverUserId)) {
-            throw new UserHasNoPermissionToException(
+            throw new PermissionDeniedException(
                 "Only the invited user can accept the invitation"
             );
         }
@@ -238,7 +238,7 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         final UUID loggedUserId = userUtils.getLoggedUserId();
 
         if (!loggedUserId.equals(receiverUserId)) {
-            throw new UserHasNoPermissionToException(
+            throw new PermissionDeniedException(
                 "Only the invited user can decline the invitation."
             );
         }
@@ -284,7 +284,7 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         final Club club = getClub(clubId);
 
         if (!loggedUserId.equals(userId)) {
-            throw new UserHasNoPermissionToException(
+            throw new PermissionDeniedException(
                 "Logged user and the member who is leaving do not correspond."
             );
         }

@@ -8,21 +8,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users/{ownerId}")
+@RequestMapping("/api/v1/users/{user-id}")
 @AllArgsConstructor
-public class UserClubControllerImpl implements UserClubController {
+public class UserClubControllerImpl {
 
     private final ClubService clubService;
 
-    @Override
-    @GetMapping("/clubs")
-    public ResponseEntity<PagedModel<ClubDTO>> findAllByOwnerId(
+    @GetMapping("/clubs/owned")
+    public ResponseEntity<PagedModel<ClubDTO>> findAllOwnedClubs(
         @RequestParam
         Optional<String> name,
         @RequestParam
@@ -31,7 +29,7 @@ public class UserClubControllerImpl implements UserClubController {
         Optional<LocalDate> endDate,
         @RequestParam
         Optional<Boolean> isPrivate,
-        @PathVariable(name="ownerId")
+        @PathVariable(name="user-id")
         UUID ownerId,
         Pageable pageable
     ) {
