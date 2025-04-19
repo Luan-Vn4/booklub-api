@@ -6,7 +6,6 @@ import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
-
 import java.util.UUID;
 
 public interface ClubMembersService {

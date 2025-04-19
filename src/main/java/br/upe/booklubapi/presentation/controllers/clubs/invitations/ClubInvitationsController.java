@@ -1,7 +1,8 @@
-package br.upe.booklubapi.presentation.controllers.clubs.members;
+package br.upe.booklubapi.presentation.controllers.clubs.invitations;
 
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
-import br.upe.booklubapi.app.user.dtos.UserDTO;
+import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
+import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -10,33 +11,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/clubs/{club-id}/members")
+@RequestMapping("/api/v1/clubs/{club-id}/invitations")
 @AllArgsConstructor
-public class ClubMembersController {
+public class ClubInvitationsController {
 
     private final ClubMembersService clubMembersService;
 
     @GetMapping
-    public ResponseEntity<PagedModel<UserDTO>> findAllMembers(
+    public ResponseEntity<PagedModel<ClubPendingEntry>> findAllClubInvitations(
         @PathVariable("club-id")
         UUID clubId,
         Pageable pageable
     ) {
         return ResponseEntity.ok(
-            clubMembersService.findAllClubMembers(clubId, pageable)
+            clubMembersService.findAllPendingEntriesByClubId(
+                clubId,
+                pageable,
+                EntryType.INVITATION
+            )
         );
     }
 
-    @DeleteMapping("/{user-id}")
-    public ResponseEntity<String> removeMember(
+    @PostMapping("/{user-id}")
+    public ResponseEntity<String> inviteUser(
         @PathVariable("club-id")
         UUID clubId,
         @PathVariable("user-id")
         UUID userId
     ) {
-        clubMembersService.removeClubMember(userId, clubId);
+        clubMembersService.sendInvitation(clubId, userId);
         return ResponseEntity.ok(
-            "Member with id \"%s\" removed from club with id \"%s\""
+            "User with id \"%s\" invited to club with id \"%s\""
                 .formatted(userId, clubId)
         );
     }
