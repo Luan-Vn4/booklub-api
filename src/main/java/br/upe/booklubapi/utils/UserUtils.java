@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
+import br.upe.booklubapi.domain.auth.exceptions.PermissionDeniedException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
@@ -27,7 +27,7 @@ public class UserUtils {
 		UUID requestIssuerId = getLoggedUserId();
 
 		if (!requestIssuerId.equals(idOfUserObjectReceivingChanges)) {
-			throw new UserHasNoPermissionToException("alterar usuário de id" + idOfUserObjectReceivingChanges);
+			throw new PermissionDeniedException("alterar usuário de id" + idOfUserObjectReceivingChanges);
 		}
 	}
 

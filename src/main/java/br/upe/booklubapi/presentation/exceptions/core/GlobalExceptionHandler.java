@@ -1,9 +1,10 @@
-package br.upe.booklubapi.presentation.exceptions;
+package br.upe.booklubapi.presentation.exceptions.core;
 
 import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import br.upe.booklubapi.domain.auth.exceptions.PermissionDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import br.upe.booklubapi.presentation.exceptions.core.ExceptionBody;
 import br.upe.booklubapi.utils.JsonUtils;
 
 @ControllerAdvice
@@ -51,8 +51,8 @@ public class GlobalExceptionHandler {
                 .body("Erro na comunicação com o server de autênticação: " + exception.getMessage());
     }
 
-    @ExceptionHandler(UserHasNoPermissionToException.class)
-    public ResponseEntity<ExceptionBody> handleWebClientRequestException(UserHasNoPermissionToException exception) {
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity<ExceptionBody> handleWebClientRequestException(PermissionDeniedException exception) {
         ExceptionBody body = ExceptionBody.builder()
         .httpStatus(HttpStatus.BAD_REQUEST.value())
         .error("Não possui permissão para executar comando")

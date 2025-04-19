@@ -1,4 +1,4 @@
-package br.upe.booklubapi.presentation.exceptions;
+package br.upe.booklubapi.domain.users.exceptions;
 
 import java.util.UUID;
 
