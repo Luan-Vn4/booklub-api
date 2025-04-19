@@ -264,8 +264,6 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     }
 
     private void declineClubPendingEntry(UUID clubId, UUID userId) {
-        final Club club = getClub(clubId);
-        final User user = getUser(userId);
         final ClubPendingEntryId entryId = new ClubPendingEntryId(
             clubId,
             userId
