@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
@@ -23,11 +25,13 @@ public class ClubPendingEntry {
     @ManyToOne
     @MapsId("clubId")
     @JoinColumn(name="club_id")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Club club;
 
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name="user_id")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private User user;
 
     @Enumerated(EnumType.STRING)
