@@ -71,6 +71,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         UUID clubId,
         Pageable pageable
     ) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubNotFoundException(clubId);
+        }
+
         return new PagedModel<>(
             clubRepository.findAllClubMembers(
                 clubId,
@@ -85,6 +89,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         UUID userId,
         Pageable pageable
     ) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+
         return new PagedModel<>(
             clubRepository.findAllUserClubs(
                 userId,
@@ -100,6 +108,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         Pageable pageable,
         EntryType entryType
     ) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubNotFoundException(clubId);
+        }
+
         return new PagedModel<>(
             clubPendingEntryRepository.findByClubId(clubId, pageable, entryType)
                 .map(clubPendingEntryDTOMapper::toDto)
@@ -112,6 +124,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         Pageable pageable,
         EntryType entryType
     ) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+
         return new PagedModel<>(
             clubPendingEntryRepository.findByUserId(userId, pageable, entryType)
                 .map(clubPendingEntryDTOMapper::toDto)
