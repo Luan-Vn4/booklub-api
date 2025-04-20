@@ -10,10 +10,7 @@ import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntryId;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
-import br.upe.booklubapi.domain.clubs.exceptions.AlreadyClubMemberException;
-import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
-import br.upe.booklubapi.domain.clubs.exceptions.NotClubMemberException;
-import br.upe.booklubapi.domain.clubs.exceptions.UnauthorizedClubActionException;
+import br.upe.booklubapi.domain.clubs.exceptions.*;
 import br.upe.booklubapi.domain.clubs.repositories.ClubPendingEntryRepository;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import br.upe.booklubapi.domain.users.entities.User;
@@ -231,7 +228,9 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         Optional<ClubPendingEntry> entry = clubPendingEntryRepository
             .findById(entryId);
 
-        if (entry.isEmpty()) return;
+        if (entry.isEmpty()) {
+            throw new ClubPendingEntryNotFoundException(clubId, userId);
+        }
 
         club.addMember(user);
         clubRepository.save(club);
@@ -308,7 +307,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
         Optional<ClubPendingEntry> entry = clubPendingEntryRepository
             .findById(entryId);
 
-        if (entry.isEmpty()) return;
+        if (entry.isEmpty()) {
+            throw new ClubPendingEntryNotFoundException(clubId, userId);
+        }
+
 
         clubPendingEntryRepository.deleteById(entryId);
     }

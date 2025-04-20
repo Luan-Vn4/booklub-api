@@ -1,15 +1,11 @@
 package br.upe.booklubapi.presentation.exceptions.clubs;
 
-import br.upe.booklubapi.domain.clubs.exceptions.AlreadyClubMemberException;
-import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
-import br.upe.booklubapi.domain.clubs.exceptions.NotClubMemberException;
-import br.upe.booklubapi.domain.clubs.exceptions.UnauthorizedClubActionException;
+import br.upe.booklubapi.domain.clubs.exceptions.*;
 import br.upe.booklubapi.presentation.exceptions.core.ExceptionBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import java.time.Instant;
 
 @ControllerAdvice
@@ -66,6 +62,22 @@ public class ClubExceptionHandler {
         final var resp = ExceptionBody.builder()
             .httpStatus(status.value())
             .error("Unauthorized club")
+            .message(e.getMessage())
+            .timestamp(Instant.now())
+            .build();
+
+        return ResponseEntity.status(status).body(resp);
+    }
+
+    @ExceptionHandler(ClubPendingEntryNotFoundException.class)
+    public ResponseEntity<ExceptionBody> handle(
+        ClubPendingEntryNotFoundException e
+    ) {
+        final HttpStatus status = HttpStatus.NOT_FOUND;
+
+        final var resp = ExceptionBody.builder()
+            .httpStatus(status.value())
+            .error("Club pending entry not found")
             .message(e.getMessage())
             .timestamp(Instant.now())
             .build();
