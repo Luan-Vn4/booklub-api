@@ -44,15 +44,17 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
         final Long count = new JPAQuery<>(em)
             .select(user.count())
             .from(club)
+            .where(club.id.eq(clubId))
             .join(club.members, user)
-            .where(club.id.eq(clubId).and(predicate))
+            .on(predicate)
             .fetchOne();
 
         final List<User> result = new JPAQuery<>(em)
             .select(user)
             .from(club)
+            .where(club.id.eq(clubId))
             .join(club.members, user)
-            .where(club.id.eq(clubId).and(predicate))
+            .on(predicate)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
@@ -76,15 +78,17 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
         final Long count = new JPAQuery<>(em)
             .select(club.count())
             .from(user)
+            .where(user.id.eq(userId))
             .join(user.clubs, club)
-            .where(user.clubs.contains(club).and(predicate))
+            .on(user.clubs.contains(club).and(predicate))
             .fetchOne();
 
         final List<Club> result = new JPAQuery<>(em)
             .select(club)
             .from(user)
+            .where(user.id.eq(userId))
             .join(user.clubs, club)
-            .where(user.clubs.contains(club).and(predicate))
+            .on(user.clubs.contains(club).and(predicate))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
