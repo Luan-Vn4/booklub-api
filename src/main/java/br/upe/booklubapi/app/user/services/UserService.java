@@ -9,9 +9,9 @@ import br.upe.booklubapi.domain.users.entities.User;
 import reactor.core.publisher.Mono;
 
 public interface UserService {
-    Mono<UserDTO> getByUuid(UUID uuid);
+    UserDTO getByUuid(UUID uuid);
 
-    Mono<List<UserDTO>> getByEmail(String email);
+    UserDTO getByEmail(String email);
 
     Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid);
 }

@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
+import br.upe.booklubapi.domain.users.entities.User;
 
 @RequestMapping("/api/v1/user")
 @RestController
@@ -31,12 +32,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<Mono<UserDTO>> getUserById(@PathVariable UUID uuid) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.getByUuid(uuid));
     }
 
     @GetMapping(params="email")
-    public ResponseEntity<Mono<List<UserDTO>>> getUserByEmail(@PathParam("email") String email) {
+    public ResponseEntity<UserDTO> getUserByEmail(@PathParam("email") String email) {
         return ResponseEntity.ok(userService.getByEmail(email));
     }
 

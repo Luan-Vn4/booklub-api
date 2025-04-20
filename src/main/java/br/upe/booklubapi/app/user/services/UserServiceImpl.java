@@ -15,12 +15,13 @@ import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
 import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import reactor.core.publisher.Mono;
 import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.domain.users.repository.UserRepository;
+import br.upe.booklubapi.infra.core.gateways.Keycloak.KeycloakRestApiGateway;
 import br.upe.booklubapi.presentation.exceptions.UserHasNoPermissionToException;
 import br.upe.booklubapi.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import br.upe.booklubapi.infra.core.KeycloakClient;
 
 @Service
 @AllArgsConstructor
@@ -28,17 +29,22 @@ public class UserServiceImpl implements UserService {
 	private final UpdateUserDTOMapper updateUserDTOMapper;
 	private final UserDTOMapper userDTOMapper;
 	private final UserMediaStorageService userMediaStorageService;
-	private final KeycloakClient keycloakClient;
+	private final KeycloakRestApiGateway keycloakClient;
 	private final UserUtils userUtils;
+	private final UserRepository userRepository;
 
 	@Override
-	public Mono<UserDTO> getByUuid(UUID uuid) {
-		return keycloakClient.getUserById(uuid);
+	public UserDTO getByUuid(UUID uuid) {
+		User user = userRepository.findById(uuid).get();
+
+		return userDTOMapper.toDTO(user);
 	}
 
 	@Override
-	public Mono<List<UserDTO>> getByEmail(String email) {
-		return keycloakClient.getUserByEmail(email);
+	public UserDTO getByEmail(String email) {
+		User user = userRepository.findByEmail(email).get();
+
+		return userDTOMapper.toDTO(user);
 	}
 
 	@Override
@@ -46,9 +52,7 @@ public class UserServiceImpl implements UserService {
 	public Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid) {
 		userUtils.verifyUserPermission(uuid);
 
-		Mono<UserDTO> userToBeUpdatedDTO = this.getByUuid(uuid);
-
-		User userToBeUpdated = userDTOMapper.toEntity(userToBeUpdatedDTO.block());
+		User userToBeUpdated = userRepository.findById(uuid).get();
 
 		userToBeUpdated = updateUserDTOMapper.partialUpdate(updateUserDTO, userToBeUpdated);
 
@@ -56,6 +60,8 @@ public class UserServiceImpl implements UserService {
 
 		String imagePath = userMediaStorageService.saveProfilePicture(updateUserDTO.image(), uuid);
 
-        return keycloakClient.updateProfilePicturePathById(imagePath, userDTOMapper.toDTO(userToBeUpdated), uuid);
+		userToBeUpdated.setImage(imagePath);
+
+		return keycloakClient.updateProfilePicturePathById(imagePath, userDTOMapper.toDTO(userToBeUpdated), uuid);
 	}
 }

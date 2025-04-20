@@ -75,11 +75,11 @@ public class User {
     }
 
     public String getImage() {
-        return attributes.get("image");
+        return attributes.get("imageUrl");
     }
 
     public void setImage(String image) {
-        attributes.put("image", image);
+        attributes.put("imageUrl", image);
     }
 
     public boolean joinClub(Club club) {

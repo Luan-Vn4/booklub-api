@@ -1,4 +1,4 @@
-package br.upe.booklubapi.infra.core;
+package br.upe.booklubapi.infra.core.gateways.Keycloak;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 
 import br.upe.booklubapi.utils.KeycloakUtils;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
@@ -35,7 +34,7 @@ import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class KeycloakClient {
+public class KeycloakRestApiGateway {
 
         @Qualifier("keycloakWebClient")
         private final WebClient keycloakWebClient;
@@ -45,34 +44,6 @@ public class KeycloakClient {
         private final KeycloakProperties keycloakProperties;
 
         private final ObjectMapper objectMapper;
-
-        private final UserDTOMapper userDTOMapper;
-
-        public Mono<UserDTO> getUserById(UUID uuid) {
-                String adminToken = keycloakUtils.getAdminToken();
-
-                return keycloakWebClient
-                                .get()
-                                .uri("/admin/realms/" + keycloakProperties.getClientRealm()
-                                                + "/users/" + uuid)
-                                .header("Authorization", "Bearer " + adminToken)
-                                .retrieve()
-                                .bodyToMono(JsonNode.class)
-                                .map(userDTOMapper::fromJson);
-        }
-
-        public Mono<List<UserDTO>> getUserByEmail(String email) {
-                String adminToken = keycloakUtils.getAdminToken();
-
-                return keycloakWebClient
-                                .get()
-                                .uri("/admin/realms/" + keycloakProperties.getClientRealm()
-                                                + "/users?email=" + email)
-                                .header("Authorization", "Bearer " + adminToken)
-                                .retrieve()
-                                .bodyToFlux(UserDTO.class)
-                                .collectList();
-        }
 
         public Mono<Void> deleteUserById(UUID uuid) {
                 String adminToken = keycloakUtils.getAdminToken();
@@ -89,7 +60,6 @@ public class KeycloakClient {
         public Mono<Void> updateUserById(User updatedUser, UUID uuid) {
                 String adminToken = keycloakUtils.getAdminToken();
 
-                // Create the user map
                 Map<String, Object> userMap = new HashMap<>();
                 userMap.put("username", updatedUser.getUsername());
                 userMap.put("email", updatedUser.getEmail());
@@ -97,10 +67,9 @@ public class KeycloakClient {
                 userMap.put("lastName", updatedUser.getLastName());
                 userMap.put("enabled", true);
 
-                // Set attributes
                 Map<String, Object> attributes = new HashMap<>();
-                attributes.put("imageUrl", List.of(updatedUser.getAttributes().get("imageUrl"))); // Wrap imageUrl in a
-                                                                                                  // list
+                attributes.put("imageUrl", List.of(updatedUser.getAttributes().get("imageUrl"))); 
+
                 userMap.put("attributes", attributes);
 
                 String userJson = "";
