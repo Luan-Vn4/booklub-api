@@ -37,11 +37,11 @@ public interface JpaClubPendingEntryRepository
     @Override
     @Query("""
         SELECT c FROM ClubPendingEntry c
-            WHERE c.club.id=:clubId
+            WHERE c.user.id=:userId
                 AND c.entryType=:entryType
     """)
     Page<ClubPendingEntry> findByUserId(
-        UUID clubId,
+        UUID userId,
         Pageable pageable,
         EntryType entryType
     );
