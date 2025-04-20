@@ -1,7 +1,7 @@
 package br.upe.booklubapi.presentation.controllers.clubs.requests;
 
+import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
-import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class ClubRequestsController {
     @Operation(
         summary="Search all requests to join club"
     )
-    public ResponseEntity<PagedModel<ClubPendingEntry>> findAllClubRequests(
+    public ResponseEntity<PagedModel<ClubPendingEntryDTO>> findAllClubRequests(
         @PathVariable("club-id")
         UUID clubId,
         Pageable pageable
@@ -59,7 +59,7 @@ public class ClubRequestsController {
         ).formatted(userId, clubId));
     }
 
-    @PostMapping("/{user-id}/deny")
+    @DeleteMapping("/{user-id}/deny")
     @Operation(
         summary="Deny a request to join a club"
     )

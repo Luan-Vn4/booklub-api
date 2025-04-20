@@ -2,6 +2,8 @@ package br.upe.booklubapi.app.clubs.services;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.ClubDTOMapper;
+import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
+import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTOMapper;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import br.upe.booklubapi.domain.clubs.entities.Club;
@@ -44,6 +46,8 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     private final ClubDTOMapper clubDTOMapper;
 
     private final UserUtils userUtils;
+
+    private final ClubPendingEntryDTOMapper clubPendingEntryDTOMapper;
 
     private Club getClub(UUID clubId) {
         return clubRepository.findById(clubId).orElseThrow(
@@ -94,24 +98,26 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     }
 
     @Override
-    public PagedModel<ClubPendingEntry> findAllPendingEntriesByClubId(
+    public PagedModel<ClubPendingEntryDTO> findAllPendingEntriesByClubId(
         UUID clubId,
         Pageable pageable,
         EntryType entryType
     ) {
         return new PagedModel<>(
             clubPendingEntryRepository.findByClubId(clubId, pageable, entryType)
+                .map(clubPendingEntryDTOMapper::toDto)
         );
     }
 
     @Override
-    public PagedModel<ClubPendingEntry> findAllPendingEntriesByUserId(
+    public PagedModel<ClubPendingEntryDTO> findAllPendingEntriesByUserId(
         UUID userId,
         Pageable pageable,
         EntryType entryType
     ) {
         return new PagedModel<>(
             clubPendingEntryRepository.findByUserId(userId, pageable, entryType)
+                .map(clubPendingEntryDTOMapper::toDto)
         );
     }
 

@@ -1,7 +1,7 @@
 package br.upe.booklubapi.presentation.controllers.clubs.invitations;
 
+import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
-import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class ClubInvitationsController {
     @Operation(
         summary="Search all club invitations"
     )
-    public ResponseEntity<PagedModel<ClubPendingEntry>> findAllClubInvitations(
+    public ResponseEntity<PagedModel<ClubPendingEntryDTO>> findAllClubInvitations(
         @PathVariable("club-id")
         UUID clubId,
         Pageable pageable
@@ -68,7 +68,7 @@ public class ClubInvitationsController {
         @PathVariable("user-id")
         UUID userId
     ) {
-        clubMembersService.sendInvitation(clubId, userId);
+        clubMembersService.cancelInvitation(clubId, userId);
         return ResponseEntity.ok((
             "Cancelled invitation to user with id \"%s\" to " +
             "join club with id \"%s\""

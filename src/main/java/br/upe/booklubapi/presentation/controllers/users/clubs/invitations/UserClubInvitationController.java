@@ -1,7 +1,7 @@
 package br.upe.booklubapi.presentation.controllers.users.clubs.invitations;
 
+import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
-import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class UserClubInvitationController {
     @Operation(
         summary="Search all invitations received by the user"
     )
-    public ResponseEntity<PagedModel<ClubPendingEntry>> findAllUserInvitations(
+    public ResponseEntity<PagedModel<ClubPendingEntryDTO>> findAllUserInvitations(
         @PathVariable("user-id")
         UUID userId,
         Pageable pageable
