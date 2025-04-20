@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name="clubs")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -57,12 +56,30 @@ public class Club {
     private Set<User> members = new HashSet<>();
 
     public Club(
-        UUID id,
-        String name,
-        LocalDate creationDate,
+        @Nullable UUID id,
+        @NotNull String name,
+        @NotNull LocalDate creationDate,
         @Nullable String imageUrl,
-        Boolean isPrivate,
-        User owner
+        @NotNull Boolean isPrivate, 
+        @NotNull User owner,
+        @NotNull Set<User> members
+    ) {
+        setId(id);
+        setName(name);
+        setCreationDate(creationDate);
+        setImageUrl(imageUrl);
+        setIsPrivate(isPrivate);
+        setMembers(members);
+        setOwner(owner);
+    }
+
+    public Club(
+        @NotNull UUID id,
+        @NotNull String name,
+        @NotNull LocalDate creationDate,
+        @Nullable String imageUrl,
+        @NotNull Boolean isPrivate,
+        @NotNull User owner
     ) {
         this(
             id,
@@ -73,6 +90,11 @@ public class Club {
             owner,
             new HashSet<>()
         );
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+        addMember(owner);
     }
 
     public boolean addMember(User user) {
