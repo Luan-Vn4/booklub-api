@@ -85,4 +85,20 @@ public class ClubExceptionHandler {
         return ResponseEntity.status(status).body(resp);
     }
 
+    @ExceptionHandler(ClubOwnerRemovalException.class)
+    public ResponseEntity<ExceptionBody> handle(
+        ClubOwnerRemovalException e
+    ) {
+        final HttpStatus status = HttpStatus.CONFLICT;
+
+        final var resp = ExceptionBody.builder()
+            .httpStatus(status.value())
+            .error("Cannot remove owner from their own club")
+            .message(e.getMessage())
+            .timestamp(Instant.now())
+            .build();
+
+        return ResponseEntity.status(status).body(resp);
+    }
+
 }

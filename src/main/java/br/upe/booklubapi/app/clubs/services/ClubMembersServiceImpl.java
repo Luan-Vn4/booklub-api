@@ -362,6 +362,10 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     }
 
     private void removeUserFromClub(User user, Club club) {
+        if (user.equals(club.getOwner())) {
+            throw new ClubOwnerRemovalException(user.getId(), club.getId());
+        }
+
         club.removeMember(user);
         clubRepository.save(club);
     }
