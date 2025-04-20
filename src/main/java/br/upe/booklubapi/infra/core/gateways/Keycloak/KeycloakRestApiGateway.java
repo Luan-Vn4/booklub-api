@@ -1,12 +1,15 @@
 package br.upe.booklubapi.infra.core.gateways.Keycloak;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,6 +27,7 @@ import br.upe.booklubapi.app.auth.dto.TokenDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 
@@ -68,7 +72,7 @@ public class KeycloakRestApiGateway {
                 userMap.put("enabled", true);
 
                 Map<String, Object> attributes = new HashMap<>();
-                attributes.put("imageUrl", List.of(updatedUser.getAttributes().get("imageUrl"))); 
+                attributes.put("imageUrl", List.of(updatedUser.getAttributes().get("imageUrl")));
 
                 userMap.put("attributes", attributes);
 
@@ -90,9 +94,9 @@ public class KeycloakRestApiGateway {
                                 .bodyToMono(Void.class);
         }
 
-        public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UserDTO userBeingUpdated, UUID id) {
+        public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UserDTO userBeingUpdated,
+                        UUID id) {
                 String adminToken = keycloakUtils.getAdminToken();
-                
 
                 Map<String, Object> userMap = new HashMap<>();
                 userMap.put("username", userBeingUpdated.username());
@@ -134,11 +138,11 @@ public class KeycloakRestApiGateway {
                 userMap.put("enabled", true);
 
                 List<Map<String, Object>> credentials = new ArrayList<>();
-                
+
                 Map<String, Object> credentialsMap = new HashMap<>();
 
-                credentialsMap.put("type","password");
-                credentialsMap.put("temporary","false");
+                credentialsMap.put("type", "password");
+                credentialsMap.put("temporary", "false");
                 credentialsMap.put("value", userDTO.password());
 
                 credentials.add(credentialsMap);
@@ -182,10 +186,11 @@ public class KeycloakRestApiGateway {
                                 .retrieve()
                                 .bodyToMono(JsonNode.class)
                                 .block();
-                
+
                 String accessToken = response.get("access_token").asText();
                 String tokenType = response.get("token_type").asText();
-                Instant expiration = Instant.now().plusSeconds(response.get("expires_in").asInt());
+                ZonedDateTime expiration = Instant.now().atZone(ZoneId.of("America/Sao_Paulo"))
+                                .plusSeconds(response.get("expires_in").asInt());
 
                 return new TokenDTO(accessToken, expiration, tokenType);
         }

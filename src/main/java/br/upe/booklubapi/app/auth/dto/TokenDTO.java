@@ -1,9 +1,9 @@
 package br.upe.booklubapi.app.auth.dto;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 public record TokenDTO(
         String accessToken,
-        Instant expiration,
+        ZonedDateTime expiration,
         String tokenType) {
 }
