@@ -50,3 +50,4 @@ replay_pid*
 ### Local Configuration Files ###
 .env
 docker-volumes
+.bat
