@@ -1,9 +1,19 @@
 package br.upe.booklubapi.app.books.dtos;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class BookItem {
-    public String title;
-    public String authors;
-    public String description;
-    public String thumbnail;
-    public String isbn;
+    private String title;
+    private String authors;
+    private String description;
+    private String thumbnail;
+    private String isbn;
 }
+
