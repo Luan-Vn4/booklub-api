@@ -3,7 +3,9 @@ package br.upe.booklubapi.app.books.services;
 import br.upe.booklubapi.app.books.dtos.BookItemQuery;
 import br.upe.booklubapi.app.books.dtos.BookSearchResponse;
 import br.upe.booklubapi.infra.core.gateways.GoogleBooks.GoogleBooksGateway;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GoogleBooksServiceImpl implements GoogleBooksService {
 
 
@@ -15,8 +17,6 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
 
     @Override
     public BookSearchResponse searchBooks(BookItemQuery query) {
-
-        String finalQuery = query.toString();
-        return googleGateway.searchBooks(finalQuery);
+        return googleGateway.searchBooks(query.toString());
     }
 }
