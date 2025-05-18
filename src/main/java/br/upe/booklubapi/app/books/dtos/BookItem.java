@@ -16,4 +16,3 @@ public class BookItem {
     private String thumbnail;
     private String isbn;
 }
-

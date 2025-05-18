@@ -17,3 +17,5 @@ public class VolumeInfo {
     private ImageLinks imageLinks;
     private List<IndustryIdentifier> industryIdentifiers;
 }
+
+

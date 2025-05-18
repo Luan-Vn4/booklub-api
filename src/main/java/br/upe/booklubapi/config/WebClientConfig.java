@@ -18,4 +18,6 @@ public class WebClientConfig {
         return WebClient.builder().baseUrl(restProperties.getHost()).build();
     }
 
+
+
 }

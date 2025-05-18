@@ -10,4 +10,5 @@ import lombok.Setter;
 public class IndustryIdentifier {
     private String type;
     private String identifier;
+
 }
