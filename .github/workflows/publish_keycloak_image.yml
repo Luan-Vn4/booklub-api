@@ -24,6 +24,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/prod/Dockerfile
+          file: docker/keycloak/Dockerfile
           push: ${{ github.event_name == 'push' }}
           tags: ${{ secrets.DOCKERHUB_USER }}/booklub-keycloak:latest
