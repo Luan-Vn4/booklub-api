@@ -32,7 +32,7 @@ public class GoogleBooksGateway {
                 .uri(uriBuilder -> uriBuilder
                         .path("/volumes")
                         .queryParam("q", query)
-                        .queryParam("printType=books")
+                        .queryParam("printType", "books")
                         .queryParam("key", apiKey)
                         .build()
                 )
