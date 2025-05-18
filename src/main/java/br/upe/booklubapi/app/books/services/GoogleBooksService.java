@@ -1,9 +1,11 @@
 package br.upe.booklubapi.app.books.services;
 
+import br.upe.booklubapi.app.books.dtos.BookItem;
 import br.upe.booklubapi.app.books.dtos.BookItemQuery;
-import br.upe.booklubapi.app.books.dtos.BookSearchResponse;
+
+import java.util.List;
 
 public interface GoogleBooksService {
 
-    BookSearchResponse searchBooks(BookItemQuery query);
+    List<BookItem> searchBooks(BookItemQuery query);
 }
