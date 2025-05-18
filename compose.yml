@@ -14,7 +14,9 @@ services:
       - booklub-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    build:
+      context: .
+      dockerfile: docker/keycloak/Dockerfile
     container_name: keycloak
     command: ["start-dev", "--import-realm", "--features=scripts", "--spi-scripting-scripts-enabled=true"]
     environment:
@@ -26,8 +28,6 @@ services:
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=1234
       - KC_DB_URL_PORT=5432
-    volumes:
-      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
       - "8080:8080"
     depends_on:
