@@ -1,10 +1,12 @@
-package br.upe.booklubapi.domain.books.repositories;
+// package br.upe.booklubapi.domain.books.repositories;
 
-import java.util.UUID;
+// import org.springframework.stereotype.Repository;
 
-import br.upe.booklubapi.domain.books.entities.BookUserRating;
-import br.upe.booklubapi.domain.core.repositories.CrudRepository;
+// import br.upe.booklubapi.domain.books.entities.BookUserId;
+// import br.upe.booklubapi.domain.books.entities.BookUserRating;
+// import br.upe.booklubapi.domain.core.repositories.CrudRepository;
+// import br.upe.booklubapi.domain.core.repositories.QueryableRepository;
 
-public interface BookUserRatingRepository extends CrudRepository<BookUserRating, UUID>  {
-    
-}
+// @Repository
+// public interface BookUserRatingRepository extends CrudRepository<BookUserRating, BookUserId>, QueryableRepository<BookUserRating>  {
+// }

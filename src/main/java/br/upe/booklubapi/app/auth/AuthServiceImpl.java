@@ -25,7 +25,6 @@ public class AuthServiceImpl implements AuthService {
     private final KeycloakRestApiGateway keycloakGateway;
     private final UserMediaStorageService userMediaStorageService;
     private final UserUtils userUtils;
-    private final UserDTOMapper userDTOMapper;
     private final UserService userService;
 
     @Override
