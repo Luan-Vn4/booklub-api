@@ -7,5 +7,5 @@ import br.upe.booklubapi.domain.books.entities.BookRatings;
 import br.upe.booklubapi.domain.core.repositories.CrudRepository;
 
 @Repository
-public interface BookUserRatingRepository extends CrudRepository<BookRatings, BookUserId>  {
+public interface BookRatingsRepository extends CrudRepository<BookRatings, BookUserId>  {
 }

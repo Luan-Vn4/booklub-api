@@ -21,11 +21,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name="book_ratings")
 public class BookRatings {
@@ -50,7 +52,6 @@ public class BookRatings {
     @Size(max = 500)
     private String review;
 
-    @NotNull
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;

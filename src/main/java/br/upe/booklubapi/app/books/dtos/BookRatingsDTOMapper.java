@@ -8,27 +8,27 @@ import org.mapstruct.*;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
 
-import br.upe.booklubapi.domain.books.entities.BookUser;
+import br.upe.booklubapi.domain.books.entities.BookRatings;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     componentModel = MappingConstants.ComponentModel.SPRING,
-    uses={BookUserDTOMapperHelpers.class}
+    uses={BookRatingsDTOMapperHelpers.class}
 )
-public interface BookUserDTOMapper {
+public interface BookRatingsDTOMapper {
 
     @Mapping(source="bookId", target="id.bookId")
     @Mapping(target="user", source="userId", qualifiedByName="userIdToUser")
-    BookUser toEntity(BookUserDTO dto);
+    BookRatings toEntity(BookRatingsDTO dto);
 
     @Mapping(source="id.bookId", target="bookId")
     @Mapping(source="id.userId", target="userId")
-    BookUserDTO toDTO(BookUser entity);
+    BookRatingsDTO toDTO(BookRatings entity);
 }
 
 @Component
 @AllArgsConstructor
-class BookUserDTOMapperHelpers {
+class BookRatingsDTOMapperHelpers {
 
     private final UserRepository userRepository;
 

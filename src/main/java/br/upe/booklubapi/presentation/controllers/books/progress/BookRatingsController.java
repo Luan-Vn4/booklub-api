@@ -12,35 +12,35 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.upe.booklubapi.app.books.dtos.BookUserDTO;
-import br.upe.booklubapi.app.books.services.BookUserService;
+import br.upe.booklubapi.app.books.dtos.BookRatingsDTO;
+import br.upe.booklubapi.app.books.services.BookRatingsService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("api/v1/book-user")
+@RequestMapping("api/v1/book-ratings")
 @AllArgsConstructor
-public class BookUserController {
-    private final BookUserService bookUserService;
+public class BookRatingsController {
+    private final BookRatingsService bookRatingsService;
 
     @PostMapping
-    public ResponseEntity<BookUserDTO> create(@RequestBody BookUserDTO saveDTO) {
-        return ResponseEntity.ok(bookUserService.save(saveDTO));
+    public ResponseEntity<BookRatingsDTO> create(@RequestBody BookRatingsDTO saveDTO) {
+        return ResponseEntity.ok(bookRatingsService.save(saveDTO));
     }
 
     @PutMapping
-    public ResponseEntity<BookUserDTO> update(@RequestBody BookUserDTO updateDTO) {
-        return ResponseEntity.ok(bookUserService.update(updateDTO));
+    public ResponseEntity<BookRatingsDTO> update(@RequestBody BookRatingsDTO updateDTO) {
+        return ResponseEntity.ok(bookRatingsService.update(updateDTO));
     }
 
     @DeleteMapping("/user/{user-id}/book/{book-id}")
     public ResponseEntity<Void> delete(@PathVariable("user-id") UUID userId, @PathVariable("book-id") UUID bookId) {
-        bookUserService.delete(userId, bookId);
+        bookRatingsService.delete(userId, bookId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{user-id}/book/{book-id}")
-    public ResponseEntity<BookUserDTO> findById(@PathVariable("user-id") UUID userId, @PathVariable("book-id") UUID bookId) {
-        return ResponseEntity.ok(bookUserService.findById(userId, bookId));
+    public ResponseEntity<BookRatingsDTO> findById(@PathVariable("user-id") UUID userId, @PathVariable("book-id") UUID bookId) {
+        return ResponseEntity.ok(bookRatingsService.findById(userId, bookId));
     }
 }
