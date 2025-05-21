@@ -20,7 +20,7 @@ public record QueryClubDTO(
         var containsName = this.name()
             .map(club.name::contains)
             .orElse(Expressions.TRUE);
-
+        
         var creationDateBetween = this.hasValidDateInterval()
             ? club.creationDate.between(
             this.startDate().get(), this.endDate().get())
