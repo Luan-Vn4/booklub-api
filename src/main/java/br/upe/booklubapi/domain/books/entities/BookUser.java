@@ -27,8 +27,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="book_user_progress")
-public class BookUserProgress {
+@Table(name="book_user")
+public class BookUser {
 
     @EmbeddedId
     private BookUserId id;

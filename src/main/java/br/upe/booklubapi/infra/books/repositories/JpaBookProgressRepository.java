@@ -1,6 +1,6 @@
 package br.upe.booklubapi.infra.books.repositories;
 
-import br.upe.booklubapi.domain.books.entities.BookUserProgress;
+import br.upe.booklubapi.domain.books.entities.BookUser;
 import br.upe.booklubapi.domain.books.entities.BookUserId;
 import br.upe.booklubapi.domain.books.repositories.BookProgressRepository;
 import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JpaBookProgressRepository
-        extends JpaRepository<BookUserProgress, BookUserId>, BookProgressRepository {
+        extends JpaRepository<BookUser, BookUserId>, BookProgressRepository {
     @Query(value = """
-                SELECT AVG(bup.progress)
+                SELECT AVG(bu.progress)
                 FROM clubs c
                 JOIN user_entity u ON c.owner_id = u.id
-                JOIN book_user_progress bup ON bup.user_id = u.id
+                JOIN book_user bu ON bu.user_id = u.id
                 WHERE c.id = :clubId
-                AND bup.book_id = :bookId
+                AND bu.book_id = :bookId
             """, nativeQuery = true)
     @Override
     Double findByClubId(UUID clubId, UUID bookId);

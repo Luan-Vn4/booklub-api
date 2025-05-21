@@ -3,6 +3,6 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
-public record BookUserProgressDTO(@NotNull UUID userId, @NotNull UUID bookId, @NotNull Double progress) {
+public record BookUserDTO(@NotNull UUID userId, @NotNull UUID bookId, @NotNull Double progress) {
     
 }

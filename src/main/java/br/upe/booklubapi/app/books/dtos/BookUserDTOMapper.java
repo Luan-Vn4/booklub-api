@@ -10,27 +10,27 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.upe.booklubapi.domain.books.entities.BookUserProgress;
+import br.upe.booklubapi.domain.books.entities.BookUser;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     componentModel = MappingConstants.ComponentModel.SPRING,
-    uses={BookUserProgressDTOMapperHelpers.class}
+    uses={BookUserDTOMapperHelpers.class}
 )
-public interface BookUserProgressDTOMapper {
+public interface BookUserDTOMapper {
 
     @Mapping(source="bookId", target="id.bookId")
     @Mapping(target="user", source="userId", qualifiedByName="userIdToUser")
-    BookUserProgress toEntity(BookUserProgressDTO dto);
+    BookUser toEntity(BookUserDTO dto);
 
     @Mapping(source="id.bookId", target="bookId")
     @Mapping(source="id.userId", target="userId")
-    BookUserProgressDTO toDTO(BookUserProgress entity);
+    BookUserDTO toDTO(BookUser entity);
 }
 
 @Component
 @AllArgsConstructor
-class BookUserProgressDTOMapperHelpers {
+class BookUserDTOMapperHelpers {
 
     private final UserRepository userRepository;
 
