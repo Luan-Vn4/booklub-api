@@ -7,6 +7,7 @@ import br.upe.booklubapi.app.user.services.UserService;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
 import br.upe.booklubapi.app.auth.dto.TokenDTO;
+import br.upe.booklubapi.app.auth.dto.UpdateUserPasswordDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
@@ -16,8 +17,6 @@ import br.upe.booklubapi.infra.core.gateways.Keycloak.KeycloakRestApiGateway;
 import br.upe.booklubapi.utils.UserUtils;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
-import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
-import br.upe.booklubapi.domain.users.repository.UserRepository;
 
 @Service
 @AllArgsConstructor
@@ -50,6 +49,12 @@ public class AuthServiceImpl implements AuthService {
 
         return new AuthResponseDTO(userDTO, tokenDTO);
     }
+
+    @Override
+	public Mono<Void> updateUserPassword(UpdateUserPasswordDTO dto) {
+		userUtils.verifyUserPermission(dto.userId());
+		return keycloakGateway.resetUserPassword(dto.newPassword(), dto.userId());
+	}
 
     @Override
 	public Mono<Void> deleteById(UUID uuid) {
