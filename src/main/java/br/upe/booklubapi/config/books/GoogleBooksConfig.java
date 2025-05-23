@@ -16,7 +16,7 @@ public class GoogleBooksConfig {
     @Value("${google.books.api.key}")
     private String googleBooksApiKey;
 
-    @Bean
+    @Bean(name = "googleBooksWebClient")
     public WebClient googleBooksWebClient() {
         return WebClient.builder()
                 .baseUrl(googleBooksBaseUrl)
