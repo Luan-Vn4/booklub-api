@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.upe.booklubapi.app.auth.AuthService;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
-import br.upe.booklubapi.app.auth.dto.TokenDTO;
+import br.upe.booklubapi.app.auth.dto.UpdateUserPasswordDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,5 +41,10 @@ public class AuthController {
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Mono<Void>> deleteUserById(@PathVariable UUID uuid) {
         return ResponseEntity.ok(authService.deleteById(uuid));
+    }
+
+    @PutMapping
+    public ResponseEntity<Mono<Void>> updateUserPasswordById(@Valid @RequestBody UpdateUserPasswordDTO dto) {
+        return ResponseEntity.ok(authService.updateUserPassword(dto));
     }
 }

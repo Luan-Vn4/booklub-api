@@ -94,6 +94,32 @@ public class KeycloakRestApiGateway {
                                 .bodyToMono(Void.class);
         }
 
+        public Mono<Void> resetUserPassword(String newPassword, UUID uuid) {
+                String adminToken = keycloakUtils.getAdminToken();
+
+                Map<String, Object> credentialsRepresentationMap = new HashMap<>();
+                credentialsRepresentationMap.put("type", "password");
+                credentialsRepresentationMap.put("temporary", "false");
+                credentialsRepresentationMap.put("value", newPassword);
+
+                String credentialsJson = "";
+                try {
+                        credentialsJson = objectMapper.writeValueAsString(credentialsRepresentationMap);
+                } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error converting credentials to JSON", e);
+                }
+
+                return keycloakWebClient
+                                .put()
+                                .uri("/admin/realms/" + keycloakProperties.getClientRealm()
+                                                + "/users/" + uuid + "/reset-password")
+                                .header("Authorization", "Bearer " + adminToken)
+                                .header("Content-Type", "application/json")
+                                .bodyValue(credentialsJson)
+                                .retrieve()
+                                .bodyToMono(Void.class);
+        }
+
         public Mono<Void> updateProfilePicturePathById(String newProfilePicturePath, UserDTO userBeingUpdated,
                         UUID id) {
                 String adminToken = keycloakUtils.getAdminToken();
