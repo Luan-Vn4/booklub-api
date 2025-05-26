@@ -28,6 +28,8 @@ public class GoogleBooksGateway {
     public BookSearchResponse searchBooks(String query) {
         log.info("Searching books on Google Books API with query: {}", query);
 
+        System.out.println(query);
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/volumes")

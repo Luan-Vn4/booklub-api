@@ -37,10 +37,8 @@ import br.upe.booklubapi.domain.users.entities.User;
 import java.util.UUID;
 
 @Component
-@AllArgsConstructor
 public class KeycloakRestApiGateway {
 
-        @Qualifier("keycloakWebClient")
         private final WebClient keycloakWebClient;
 
         private final KeycloakUtils keycloakUtils;
@@ -48,6 +46,18 @@ public class KeycloakRestApiGateway {
         private final KeycloakProperties keycloakProperties;
 
         private final ObjectMapper objectMapper;
+
+        public KeycloakRestApiGateway(
+                @Qualifier("keycloakWebClient") WebClient keycloakWebClient,
+                KeycloakUtils keycloakUtils,
+                KeycloakProperties keycloakProperties,
+                ObjectMapper objectMapper
+        ) {
+                this.keycloakWebClient = keycloakWebClient;
+                this.keycloakUtils = keycloakUtils;
+                this.keycloakProperties = keycloakProperties;
+                this.objectMapper = objectMapper;
+        }
 
         public Mono<Void> deleteUserById(UUID uuid) {
                 String adminToken = keycloakUtils.getAdminToken();

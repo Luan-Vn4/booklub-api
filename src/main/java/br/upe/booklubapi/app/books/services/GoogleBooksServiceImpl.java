@@ -20,12 +20,10 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
 
     @Override
     public List<BookItem> searchBooks(BookItemQuery query) {
-        BookSearchResponse response = googleGateway.searchBooks(query.toString());
-
-        if (response == null || response.getItems() == null) {
+        if (query == null || query.toString().isBlank()) {
             return Collections.emptyList();
         }
-
+        BookSearchResponse response = googleGateway.searchBooks(query.toString());
         //conversão
         return response.getItems().stream()
                 .map(this::convertToBookItem)
