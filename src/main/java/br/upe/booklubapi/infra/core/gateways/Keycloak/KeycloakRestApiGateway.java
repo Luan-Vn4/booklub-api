@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,22 @@ public class KeycloakRestApiGateway {
                                 .header("Authorization", "Bearer " + adminToken)
                                 .header("Content-Type", "application/json")
                                 .bodyValue(credentialsJson)
+                                .retrieve()
+                                .bodyToMono(Void.class);
+        }
+
+        public Mono<Void> resetUserPasswordViaEmail(UUID uuid) {
+                String adminToken = keycloakUtils.getAdminToken();
+
+                List<String> actions = Arrays.asList("UPDATE_PASSWORD");
+
+                return keycloakWebClient
+                                .put()
+                                .uri("/admin/realms/" + keycloakProperties.getClientRealm()
+                                                + "/users/" + uuid + "/execute-actions-email?lifespan=1800")
+                                .header("Authorization", "Bearer " + adminToken)
+                                .header("Content-Type", "application/json")
+                                .bodyValue(actions)
                                 .retrieve()
                                 .bodyToMono(Void.class);
         }

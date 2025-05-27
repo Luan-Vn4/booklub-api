@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
 	public Mono<Void> updateUserPassword(UpdateUserPasswordDTO dto) {
 		userUtils.verifyUserPermission(dto.userId());
-		return keycloakGateway.resetUserPassword(dto.newPassword(), dto.userId());
+		return keycloakGateway.resetUserPasswordViaEmail(dto.userId());
 	}
 
     @Override
