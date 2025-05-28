@@ -7,7 +7,7 @@ import br.upe.booklubapi.app.user.services.UserService;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
 import br.upe.booklubapi.app.auth.dto.TokenDTO;
-import br.upe.booklubapi.app.auth.dto.UpdateUserPasswordDTO;
+import br.upe.booklubapi.app.auth.dto.RecoverUserPasswordDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
@@ -51,9 +51,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-	public Mono<Void> updateUserPassword(UpdateUserPasswordDTO dto) {
-		userUtils.verifyUserPermission(dto.userId());
-		return keycloakGateway.resetUserPasswordViaEmail(dto.userId());
+	public Mono<Void> updateUserPassword(RecoverUserPasswordDTO dto) {
+        String userId = userService.getByEmail(dto.email()).id();
+
+		return keycloakGateway.recoverUserPassword(UUID.fromString(userId));
 	}
 
     @Override

@@ -131,7 +131,7 @@ public class KeycloakRestApiGateway {
                                 .bodyToMono(Void.class);
         }
 
-        public Mono<Void> resetUserPasswordViaEmail(UUID uuid) {
+        public Mono<Void> recoverUserPassword(UUID uuid) {
                 String adminToken = keycloakUtils.getAdminToken();
 
                 List<String> actions = Arrays.asList("UPDATE_PASSWORD");

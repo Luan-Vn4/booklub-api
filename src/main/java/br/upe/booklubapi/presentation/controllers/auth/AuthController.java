@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.upe.booklubapi.app.auth.AuthService;
 import br.upe.booklubapi.app.auth.dto.AuthBody;
 import br.upe.booklubapi.app.auth.dto.AuthResponseDTO;
-import br.upe.booklubapi.app.auth.dto.UpdateUserPasswordDTO;
+import br.upe.booklubapi.app.auth.dto.RecoverUserPasswordDTO;
 import br.upe.booklubapi.app.user.dtos.CreateUserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -43,8 +43,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.deleteById(uuid));
     }
 
-    @PutMapping
-    public ResponseEntity<Mono<Void>> updateUserPasswordById(@Valid @RequestBody UpdateUserPasswordDTO dto) {
+    @PutMapping("/recover-password")
+    public ResponseEntity<Mono<Void>> updateUserPasswordById(@Valid @RequestBody RecoverUserPasswordDTO dto) {
         return ResponseEntity.ok(authService.updateUserPassword(dto));
     }
 }

@@ -1,13 +1,16 @@
 package br.upe.booklubapi.app.user.services;
 
 import java.util.UUID;
+
 import org.springframework.stereotype.Service;
+
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.mappers.UpdateUserDTOMapper;
 import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import reactor.core.publisher.Mono;
 import br.upe.booklubapi.domain.users.entities.User;
+import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.infra.core.gateways.Keycloak.KeycloakRestApiGateway;
 import br.upe.booklubapi.utils.UserUtils;
@@ -26,14 +29,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDTO getByUuid(UUID uuid) {
-		User user = userRepository.findById(uuid).get();
+		User user = userRepository.findById(uuid).orElseThrow(
+            () -> new UserNotFoundException(uuid)
+        );
 
 		return userDTOMapper.toDTO(user);
 	}
 
 	@Override
 	public UserDTO getByEmail(String email) {
-		User user = userRepository.findByEmail(email).get();
+		User user = userRepository.findByEmail(email).orElseThrow(
+            () -> new UserNotFoundException(email)
+        );
 
 		return userDTOMapper.toDTO(user);
 	}
