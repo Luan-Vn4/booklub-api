@@ -31,6 +31,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name="book_ratings")
 public class BookRatings {
+
     @EmbeddedId
     private BookUserId id;
 
@@ -42,17 +43,16 @@ public class BookRatings {
 
     @NotNull
     @Range(min=0, max=5)
-    private int rating;
+    private short rating;
     
     @NotNull
     @Range(min=0, max=5)
-    private int dificulty;
+    private short dificulty;
 
     @NotNull
     @Size(max = 500)
     private String review;
 
-    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
 }
