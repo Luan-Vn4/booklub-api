@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Mono<Void> register(CreateUserDTO userDTO) { //Essa gambiarra absurda tem que ser feita porque a imagem de perfil tem que ser salva usando o UUID
-        if (userDTO.image().isEmpty()) {
+        if (userDTO.image() == null) {
             return keycloakGateway.register(userDTO);
         }
         
