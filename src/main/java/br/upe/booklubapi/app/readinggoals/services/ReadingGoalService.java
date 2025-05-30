@@ -29,6 +29,8 @@ public interface ReadingGoalService {
         ReadingGoalQueryDTO dto
     );
 
+    ReadingGoalDTO getClubCurrentReadingGoal(UUID clubId);
+
     ReadingGoalDTO getReadingGoal(UUID readingGoalId);
 
     void deleteReadingGoal(UUID id);

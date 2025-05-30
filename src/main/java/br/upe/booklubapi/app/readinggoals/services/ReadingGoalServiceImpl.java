@@ -183,6 +183,20 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     }
 
     @Override
+    public ReadingGoalDTO getClubCurrentReadingGoal(UUID clubId) {
+        final LocalDate now = LocalDate.now();
+        final var query = readingGoal.startDate.before(now)
+            .and(readingGoal.endDate.after(now));
+
+        return readingGoalDTOMapper.toDto(
+            readingGoalRepository.findAll(
+                query,
+                PageRequest.of(0, 1)
+            ).getContent().get(0)
+        );
+    }
+
+    @Override
     public ReadingGoalDTO getReadingGoal(UUID readingGoalId) {
         User loggedUser = getUser(userUtils.getLoggedUserId());
         ReadingGoal readingGoal = getReadingGoalById(readingGoalId);
