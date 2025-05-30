@@ -1,7 +1,5 @@
 package br.upe.booklubapi.app.books.dtos;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +11,7 @@ public class BookItemQuery {
     public String inpublisher;
     public String subject;
     public String isbn;
+
 
     @Override
     public String toString() {
