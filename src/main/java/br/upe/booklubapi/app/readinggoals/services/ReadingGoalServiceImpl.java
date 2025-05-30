@@ -67,11 +67,11 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         Optional<UUID> excludeId
     ) {
         var query = (
-            readingGoal.startDate.before(startDate)
-            .and(readingGoal.startDate.before(endDate))
+            readingGoal.startDate.goe(startDate)
+            .and(readingGoal.startDate.loe(endDate))
         ).or(
-            readingGoal.endDate.before(startDate)
-            .and(readingGoal.endDate.before(endDate))
+            readingGoal.endDate.goe(startDate)
+            .and(readingGoal.endDate.loe(endDate))
         );
 
         if (excludeId.isPresent()) {
