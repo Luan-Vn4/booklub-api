@@ -1,4 +1,4 @@
-package br.upe.booklubapi.domain.readinggoals;
+package br.upe.booklubapi.domain.readinggoals.entities;
 
 import br.upe.booklubapi.domain.clubs.entities.Club;
 import jakarta.persistence.*;
