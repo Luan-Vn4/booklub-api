@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import br.upe.booklubapi.domain.core.exceptions.IllegalQueryException;
+import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -40,6 +43,20 @@ public class GlobalExceptionHandler {
             .build();
 
         return ResponseEntity.status(status).body(body);
+    }
+
+    @ExceptionHandler(IllegalQueryException.class)
+    public ResponseEntity<ExceptionBody> handle(IllegalQueryException e) {
+        final HttpStatus status = HttpStatus.CONFLICT;
+
+        final var resp = ExceptionBody.builder()
+            .httpStatus(status.value())
+            .error("Illegal Query")
+            .message(e.getMessage())
+            .timestamp(Instant.now())
+            .build();
+
+        return ResponseEntity.status(status).body(resp);
     }
 
 }
