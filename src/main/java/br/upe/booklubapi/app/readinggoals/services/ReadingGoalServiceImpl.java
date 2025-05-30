@@ -7,6 +7,7 @@ import br.upe.booklubapi.domain.clubs.exceptions.UnauthorizedClubActionException
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import br.upe.booklubapi.domain.readinggoals.QReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
+import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
 import br.upe.booklubapi.domain.readinggoals.repositories.ReadingGoalRepository;
 import br.upe.booklubapi.domain.users.entities.User;
@@ -14,9 +15,12 @@ import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.utils.UserUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,6 +61,30 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         );
     }
 
+    private void checkConflictingReadingGoalDates(
+        LocalDate startDate,
+        LocalDate endDate,
+        Optional<UUID> excludeId
+    ) {
+        var query = (
+            readingGoal.startDate.before(startDate)
+            .and(readingGoal.startDate.before(endDate))
+        ).or(
+            readingGoal.endDate.before(startDate)
+            .and(readingGoal.endDate.before(endDate))
+        );
+
+        if (excludeId.isPresent()) {
+            query = query.and(readingGoal.id.ne(excludeId.get()));
+        }
+
+        final boolean conflicts = readingGoalRepository.exists(query);
+
+        if (conflicts) {
+            throw new ConflictingReadingGoalException(startDate, endDate);
+        }
+    }
+
     @Override
     public ReadingGoalDTO addReadingGoal(CreateReadingGoalDTO dto) {
         final var loggedUserId = userUtils.getLoggedUserId();
@@ -69,6 +97,12 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
                 dto.clubId()
             );
         }
+
+        checkConflictingReadingGoalDates(
+            dto.startDate(),
+            dto.endDate(),
+            Optional.empty()
+        );
 
         final ReadingGoal readingGoal = createReadingGoalDTOMapper.toEntity(dto);
 
@@ -93,6 +127,12 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
                 club.getId()
             );
         }
+
+        checkConflictingReadingGoalDates(
+            dto.startDate(),
+            dto.endDate(),
+            Optional.of(readingGoalId)
+        );
 
         ReadingGoal updated = updateReadingGoalDTOMapper.partialUpdate(
             dto,
