@@ -7,10 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name="clubs")
@@ -132,7 +129,7 @@ public class Club {
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        return Objects.requireNonNullElse(getId(), 0).hashCode();
     }
 
     @Override
