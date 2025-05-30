@@ -12,4 +12,5 @@ import lombok.ToString;
 @ToString
 public class BookSearchResponse {
     private List<BookVolume> items;
+    private int totalItems;
 }

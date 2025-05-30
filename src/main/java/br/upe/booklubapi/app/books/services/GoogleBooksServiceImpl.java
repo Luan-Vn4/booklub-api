@@ -2,7 +2,14 @@ package br.upe.booklubapi.app.books.services;
 
 import br.upe.booklubapi.app.books.dtos.*;
 import br.upe.booklubapi.infra.core.gateways.GoogleBooks.GoogleBooksGateway;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,17 +24,17 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
         this.googleGateway = googleGateway;
     }
 
-
     @Override
-    public List<BookItem> searchBooks(BookItemQuery query) {
+    public PagedModel<BookItem> searchBooks(BookItemQuery query, Pageable pageable) {
         if (query == null || query.toString().isBlank()) {
-            return Collections.emptyList();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Os parâmetros da Query não podem ser nulos ou vazios!\"");
         }
-        BookSearchResponse response = googleGateway.searchBooks(query.toString());
+
+        Page<BookVolume> response = googleGateway.searchBooks(query.toString(), pageable);
         //conversão
-        return response.getItems().stream()
-                .map(this::convertToBookItem)
-                .toList();
+
+        Page<BookItem> pageBookItem = response.map(this::convertToBookItem);
+        return new PagedModel<>(pageBookItem);
     }
 
     //a gnt transforma para poder enviar um json pro front mais simplificado do q recebemos da api

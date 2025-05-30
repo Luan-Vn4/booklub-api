@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 public class AuthController {
@@ -44,7 +46,8 @@ public class AuthController {
     }
 
     @PutMapping("/recover-password")
-    public ResponseEntity<Mono<Void>> updateUserPasswordById(@Valid @RequestBody RecoverUserPasswordDTO dto) {
-        return ResponseEntity.ok(authService.updateUserPassword(dto));
+    public ResponseEntity<Void> updateUserPasswordById(@Valid @RequestBody RecoverUserPasswordDTO dto) {
+        authService.updateUserPassword(dto).block();
+        return ResponseEntity.ok().build();
     }
 }
