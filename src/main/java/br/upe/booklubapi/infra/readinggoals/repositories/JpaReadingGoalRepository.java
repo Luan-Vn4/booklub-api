@@ -14,18 +14,29 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface JpaReadingGoalRepository
         extends JpaRepository<ReadingGoal, UUID>,
                 QuerydslPredicateExecutor<ReadingGoal>,
                 ReadingGoalRepository,
-                UserReadingGoalRepository {}
+                UserReadingGoalRepository {
+
+    @Override
+    @Query("""
+        SELECT r FROM ReadingGoal r
+            WHERE CURRENT TIMESTAMP BETWEEN r.startDate AND r.endDate
+    """)
+    Optional<ReadingGoal> findClubCurrentReadingGoal(UUID clubId);
+
+}
 
 @Component
 @AllArgsConstructor

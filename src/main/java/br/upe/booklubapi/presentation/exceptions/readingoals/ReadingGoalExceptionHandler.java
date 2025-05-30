@@ -2,6 +2,7 @@ package br.upe.booklubapi.presentation.exceptions.readingoals;
 
 import br.upe.booklubapi.domain.clubs.exceptions.AlreadyClubMemberException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
+import br.upe.booklubapi.domain.readinggoals.exceptions.NoCurrentReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
 import br.upe.booklubapi.presentation.exceptions.core.ExceptionBody;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,20 @@ public class ReadingGoalExceptionHandler {
         final var resp = ExceptionBody.builder()
             .httpStatus(status.value())
             .error("Reading Goal Not Found")
+            .message(e.getMessage())
+            .timestamp(Instant.now())
+            .build();
+
+        return ResponseEntity.status(status).body(resp);
+    }
+
+    @ExceptionHandler(NoCurrentReadingGoalException.class)
+    public ResponseEntity<ExceptionBody> handle(NoCurrentReadingGoalException e) {
+        final HttpStatus status = HttpStatus.NO_CONTENT;
+
+        final var resp = ExceptionBody.builder()
+            .httpStatus(status.value())
+            .error("No Current Reading Goal Defined")
             .message(e.getMessage())
             .timestamp(Instant.now())
             .build();

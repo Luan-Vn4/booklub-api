@@ -8,6 +8,7 @@ import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import br.upe.booklubapi.domain.readinggoals.entities.QReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
+import br.upe.booklubapi.domain.readinggoals.exceptions.NoCurrentReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
 import br.upe.booklubapi.domain.readinggoals.repositories.ReadingGoalRepository;
 import br.upe.booklubapi.domain.users.entities.User;
@@ -190,16 +191,10 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
 
     @Override
     public ReadingGoalDTO getClubCurrentReadingGoal(UUID clubId) {
-        final LocalDate now = LocalDate.now();
-        final var query = readingGoal.startDate.before(now)
-            .and(readingGoal.endDate.after(now));
-
-        return readingGoalDTOMapper.toDto(
-            readingGoalRepository.findAll(
-                query,
-                PageRequest.of(0, 1)
-            ).getContent().get(0)
-        );
+        final ReadingGoal readingGoal = readingGoalRepository
+            .findClubCurrentReadingGoal(clubId)
+            .orElseThrow(() -> new NoCurrentReadingGoalException(clubId));
+        return readingGoalDTOMapper.toDto(readingGoal);
     }
 
     @Override
