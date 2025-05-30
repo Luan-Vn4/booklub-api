@@ -1,7 +1,7 @@
 package br.upe.booklubapi.presentation.exceptions.readingoals;
 
-import br.upe.booklubapi.domain.clubs.exceptions.AlreadyClubMemberException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
+import br.upe.booklubapi.domain.readinggoals.exceptions.IllegalReadingGoalDate;
 import br.upe.booklubapi.domain.readinggoals.exceptions.NoCurrentReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
 import br.upe.booklubapi.presentation.exceptions.core.ExceptionBody;
@@ -50,6 +50,20 @@ public class ReadingGoalExceptionHandler {
         final var resp = ExceptionBody.builder()
             .httpStatus(status.value())
             .error("No Current Reading Goal Defined")
+            .message(e.getMessage())
+            .timestamp(Instant.now())
+            .build();
+
+        return ResponseEntity.status(status).body(resp);
+    }
+
+    @ExceptionHandler(IllegalReadingGoalDate.class)
+    public ResponseEntity<ExceptionBody> handle(IllegalReadingGoalDate e) {
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        final var resp = ExceptionBody.builder()
+            .httpStatus(status.value())
+            .error("Start date must come before end date")
             .message(e.getMessage())
             .timestamp(Instant.now())
             .build();

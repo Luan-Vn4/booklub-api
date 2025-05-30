@@ -8,6 +8,7 @@ import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
 import br.upe.booklubapi.domain.readinggoals.entities.QReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
+import br.upe.booklubapi.domain.readinggoals.exceptions.IllegalReadingGoalDate;
 import br.upe.booklubapi.domain.readinggoals.exceptions.NoCurrentReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
 import br.upe.booklubapi.domain.readinggoals.repositories.ReadingGoalRepository;
@@ -16,7 +17,6 @@ import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.utils.UserUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
@@ -67,6 +67,10 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         LocalDate endDate,
         Optional<UUID> excludeId
     ) {
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalReadingGoalDate(startDate, endDate);
+        }
+
         var query = (
             readingGoal.startDate.goe(startDate)
             .and(readingGoal.startDate.loe(endDate))

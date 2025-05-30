@@ -4,9 +4,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import br.upe.booklubapi.domain.core.exceptions.IllegalQueryException;
-import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
