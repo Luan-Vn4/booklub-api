@@ -1,7 +1,7 @@
 package br.upe.booklubapi.infra.readinggoals.repositories;
 
 import br.upe.booklubapi.domain.clubs.entities.QClub;
-import br.upe.booklubapi.domain.readinggoals.QReadingGoal;
+import br.upe.booklubapi.domain.readinggoals.entities.QReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.repositories.ReadingGoalRepository;
 import br.upe.booklubapi.domain.readinggoals.repositories.UserReadingGoalRepository;

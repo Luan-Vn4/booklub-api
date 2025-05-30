@@ -1,10 +1,9 @@
 package br.upe.booklubapi.app.readinggoals.dtos;
 
 import br.upe.booklubapi.domain.core.exceptions.IllegalQueryException;
-import br.upe.booklubapi.domain.readinggoals.QReadingGoal;
+import br.upe.booklubapi.domain.readinggoals.entities.QReadingGoal;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-
 import java.time.LocalDate;
 import java.util.Optional;
 

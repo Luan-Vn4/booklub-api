@@ -5,7 +5,7 @@ import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.exceptions.UnauthorizedClubActionException;
 import br.upe.booklubapi.domain.clubs.repositories.ClubRepository;
-import br.upe.booklubapi.domain.readinggoals.QReadingGoal;
+import br.upe.booklubapi.domain.readinggoals.entities.QReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ConflictingReadingGoalException;
 import br.upe.booklubapi.domain.readinggoals.exceptions.ReadingGoalNotFoundException;
@@ -86,15 +86,18 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     }
 
     @Override
-    public ReadingGoalDTO addReadingGoal(CreateReadingGoalDTO dto) {
+    public ReadingGoalDTO addReadingGoal(
+        UUID clubId,
+        CreateReadingGoalDTO dto
+    ) {
         final var loggedUserId = userUtils.getLoggedUserId();
-        final Club club = getClub(dto.clubId());
+        final Club club = getClub(clubId);
 
         if (!club.getOwner().getId().equals(loggedUserId)) {
             throw new UnauthorizedClubActionException(
                 "Add Reading Goal",
                 loggedUserId,
-                dto.clubId()
+                clubId
             );
         }
 
@@ -104,7 +107,10 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
             Optional.empty()
         );
 
-        final ReadingGoal readingGoal = createReadingGoalDTOMapper.toEntity(dto);
+        final ReadingGoal readingGoal = createReadingGoalDTOMapper.toEntity(
+            dto,
+            club
+        );
 
         return readingGoalDTOMapper.toDto(
             readingGoalRepository.save(readingGoal)

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ReadingGoalService {
 
-    ReadingGoalDTO addReadingGoal(CreateReadingGoalDTO dto);
+    ReadingGoalDTO addReadingGoal(UUID clubId, CreateReadingGoalDTO dto);
 
     ReadingGoalDTO updateReadingGoal(
         UUID readingGoalId,

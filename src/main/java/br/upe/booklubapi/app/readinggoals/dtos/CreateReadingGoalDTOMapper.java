@@ -18,8 +18,17 @@ import java.util.UUID;
 public interface CreateReadingGoalDTOMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "club", source = "clubId", qualifiedByName = "clubIdToClub")
-    ReadingGoal toEntity(CreateReadingGoalDTO dto);
+    ReadingGoal toEntity(CreateReadingGoalDTO dto, @Context Club club);
+
+    @AfterMapping
+    default void afterMapping(
+        CreateReadingGoalDTO dto,
+        @MappingTarget ReadingGoal readingGoal,
+        @Context Club club
+    ) {
+        readingGoal.setClub(club);
+    }
+
 
 }
 
@@ -30,7 +39,7 @@ class CreateReadingGoalDTOMapperHelpers {
     private final ClubRepository clubRepository;
 
     @Named("clubIdToClub")
-    public Club clubIdToClub(UUID clubId) {
+    public Club clubIdToClub(@Context UUID clubId) {
         return clubRepository.findById(clubId)
             .orElseThrow(() -> new ClubNotFoundException(clubId));
     }
