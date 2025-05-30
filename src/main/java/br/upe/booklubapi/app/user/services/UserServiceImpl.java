@@ -2,6 +2,9 @@ package br.upe.booklubapi.app.user.services;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.upe.booklubapi.app.user.dtos.UpdateUserDTO;
@@ -12,6 +15,7 @@ import reactor.core.publisher.Mono;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
+import br.upe.booklubapi.domain.users.repository.UserRepositoryCustom;
 import br.upe.booklubapi.infra.core.gateways.Keycloak.KeycloakRestApiGateway;
 import br.upe.booklubapi.utils.UserUtils;
 import jakarta.transaction.Transactional;
@@ -26,6 +30,8 @@ public class UserServiceImpl implements UserService {
 	private final KeycloakRestApiGateway keycloakClient;
 	private final UserUtils userUtils;
 	private final UserRepository userRepository;
+	private final UserRepositoryCustom userRepositoryCustom;
+
 
 	@Override
 	public UserDTO getByUuid(UUID uuid) {
@@ -61,5 +67,14 @@ public class UserServiceImpl implements UserService {
 		userToBeUpdated.setImage(imagePath);
 
 		return keycloakClient.updateProfilePicturePathById(imagePath, userDTOMapper.toDTO(userToBeUpdated), uuid);
+	}
+
+	@Override
+	public PagedModel<UserDTO> findByUsernameContaining(String username, Pageable page) {
+
+		return new PagedModel<>(
+            userRepositoryCustom.findByUsernameContaining(username, page)
+                .map(userDTOMapper::toDTO)
+        );
 	}
 }
