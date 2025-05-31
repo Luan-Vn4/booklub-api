@@ -1,6 +1,8 @@
 package br.upe.booklubapi.domain.readinggoals.entities;
 
 import br.upe.booklubapi.domain.clubs.entities.Club;
+import br.upe.booklubapi.domain.meetings.entities.Meeting;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,11 +41,15 @@ public class ReadingGoal {
 
     @Column(name="start_date")
     @NotNull
-    LocalDate startDate;
+    private LocalDate startDate;
 
     @Column(name="end_date")
     @NotNull
-    LocalDate endDate;
+    private LocalDate endDate;
+
+    @OneToOne(mappedBy="readingGoal")
+    @Nullable
+    private Meeting meeting;
 
     @Override
     public final boolean equals(Object o) {
