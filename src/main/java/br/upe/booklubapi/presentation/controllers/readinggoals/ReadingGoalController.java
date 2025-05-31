@@ -21,9 +21,7 @@ public class ReadingGoalController {
     private final ReadingGoalService readingGoalService;
 
     @GetMapping("/{readingGoalId}")
-    @Operation(
-        summary="Get specific reading goal"
-    )
+    @Operation(summary="Get specific reading goal")
     public ResponseEntity<ReadingGoalDTO> getReadingGoal(
         @PathVariable(name="readingGoalId")
         UUID readingGoalId
@@ -45,6 +43,16 @@ public class ReadingGoalController {
             readingGoalId,
             dto
         ));
+    }
+
+    @DeleteMapping("/{readingGoalId}")
+    @Operation(summary="Delete reading goal")
+    public ResponseEntity<?> deleteReadingGoal(
+        @PathVariable(name="readingGoalId")
+        UUID readingGoalId
+    ) {
+        readingGoalService.deleteReadingGoal(readingGoalId);
+        return ResponseEntity.ok().build();
     }
 
 }
