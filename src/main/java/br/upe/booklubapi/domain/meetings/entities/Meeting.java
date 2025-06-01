@@ -1,6 +1,7 @@
 package br.upe.booklubapi.domain.meetings.entities;
 
 import br.upe.booklubapi.domain.readinggoals.entities.ReadingGoal;
+import br.upe.booklubapi.utils.hibernate.GeometryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 import org.hibernate.proxy.HibernateProxy;
 import org.locationtech.jts.geom.Point;
 import java.util.Objects;
@@ -39,6 +41,7 @@ public class Meeting {
     private String address;
 
     @Column(name="latlng", columnDefinition="GEOMETRY(POINT, 4326)")
+    @Type(GeometryType.class)
     private Point latlng;
 
     @Override

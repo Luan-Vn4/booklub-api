@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.proxy.HibernateProxy;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -49,6 +50,7 @@ public class ReadingGoal {
 
     @OneToOne(mappedBy="readingGoal")
     @Nullable
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Meeting meeting;
 
     @Override

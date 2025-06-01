@@ -83,7 +83,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public MeetingDTO getClubNextMeeting(UUID clubId) {
         final Meeting nextMeeting = meetingRepository
-            .findMeetingByReadingGoalId(clubId)
+            .findClubNextMeeting(clubId)
             .orElseThrow(() -> new NoNextMeetingException(clubId));
 
         return meetingDTOMapper.toDto(nextMeeting);
