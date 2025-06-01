@@ -12,8 +12,6 @@ import java.util.UUID;
  */
 public record CreateMeetingDTO(
     @NotNull
-    UUID id,
-    @NotNull
     UUID readingGoalId,
     @Size(max = 255)
     @NotEmpty
