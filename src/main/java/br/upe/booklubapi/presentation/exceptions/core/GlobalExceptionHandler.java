@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import br.upe.booklubapi.domain.core.exceptions.HttpResponseException;
 import br.upe.booklubapi.domain.core.exceptions.IllegalQueryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,5 +58,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(resp);
     }
+
+    @ExceptionHandler(HttpResponseException.class)
+    public ResponseEntity<ExceptionBody> handle(HttpResponseException e) {
+        final var resp = ExceptionBody.builder()
+            .httpStatus(e.getStatus().value())
+            .error(e.getError())
+            .message(e.getMessage())
+            .timestamp(e.getTimestamp())
+            .build();
+        return ResponseEntity.status(e.getStatus()).body(resp);
+    }
+
 
 }
