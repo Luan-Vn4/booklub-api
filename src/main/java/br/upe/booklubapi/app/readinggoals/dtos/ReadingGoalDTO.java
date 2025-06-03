@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ReadingGoalDTO(
@@ -18,5 +19,7 @@ public record ReadingGoalDTO(
     @NotNull
     LocalDate startDate,
     @NotNull
-    LocalDate endDate
+    LocalDate endDate,
+    @NotNull
+    LocalDateTime createdAt
 ) implements Serializable {}

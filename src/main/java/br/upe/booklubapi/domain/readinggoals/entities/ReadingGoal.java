@@ -11,8 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -52,6 +54,10 @@ public class ReadingGoal {
     @Nullable
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Meeting meeting;
+
+    @CreationTimestamp
+    @Column(name="created_at", updatable=false)
+    private LocalDateTime createdAt;
 
     @Override
     public final boolean equals(Object o) {
