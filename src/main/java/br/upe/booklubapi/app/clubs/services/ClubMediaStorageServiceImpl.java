@@ -18,6 +18,9 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
 
     @Override
     public String saveClubPicture(MultipartFile image, UUID clubId) {
+        if(image == null || image.isEmpty()) {
+            return "null";
+        }
         final String extension = StringUtils.getFilenameExtension(
             image.getOriginalFilename()
         );
