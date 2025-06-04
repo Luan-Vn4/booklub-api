@@ -29,7 +29,6 @@ public class ClubController {
         @ModelAttribute
         CreateClubDTO dto
     ) {
-        System.out.println(dto.image() != null);
         return ResponseEntity.ok(clubService.create(dto));
     }
 
