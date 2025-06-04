@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: postgres:16
+    image: postgis/postgis:16-master
     container_name: booklub-postgres
     environment:
       POSTGRES_USER: postgres
