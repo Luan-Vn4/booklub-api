@@ -17,6 +17,8 @@ public record MeetingDTO(
     UUID id,
     @NotNull
     UUID readingGoalId,
+    @NotNull
+    UUID clubId,
     @Size(max = 255)
     @NotEmpty
     String address,
