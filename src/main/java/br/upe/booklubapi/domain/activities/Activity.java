@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -24,5 +27,28 @@ public abstract class Activity {
 
     private LocalDateTime createdAt;
 
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy
+            ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+            : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy
+            ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
+            : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Activity activity = (Activity) o;
+        return getId() != null && Objects.equals(getId(), activity.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        final int classHash = this instanceof HibernateProxy
+            ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+            : getClass().hashCode();
+        final int idHash = getId() != null ? getId().hashCode() : 0;
+        return Objects.hash(classHash, idHash);
+    }
 
 }
