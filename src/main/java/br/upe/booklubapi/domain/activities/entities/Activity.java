@@ -1,10 +1,11 @@
 package br.upe.booklubapi.domain.activities.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
@@ -14,10 +15,9 @@ import java.util.UUID;
 @Entity
 @Table(name="activities")
 @Inheritance(strategy= InheritanceType.JOINED)
-@DiscriminatorColumn(name="activity_type")
 @Getter
 @Setter
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
 public abstract class Activity {
 
@@ -25,6 +25,8 @@ public abstract class Activity {
     @GeneratedValue(strategy=GenerationType.UUID)
     private UUID id;
 
+    @CreationTimestamp
+    @Column(name="created_at", updatable=false)
     private LocalDateTime createdAt;
 
     @Override

@@ -7,13 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name="member_completed_reading_activities")
-@DiscriminatorValue("member_completed_reading_activity")
 @Setter
 @Getter
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
 public class MemberCompletedReadingActivity extends ClubActivity {
 
