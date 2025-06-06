@@ -13,7 +13,16 @@ public interface MeetingDefinedActivityMapper
 
     @Mapping(source="meeting.id", target="meetingId")
     @Mapping(source="club.id", target="clubId")
-    MeetingDefinedActivityDTO toDTO(MeetingDefinedActivity entity);
+    MeetingDefinedActivityDTO mapToDTO(MeetingDefinedActivity entity);
+
+    @Override
+    default MeetingDefinedActivityDTO toDTO(Activity activity) {
+        if (!canConvert(activity)) throw new IllegalArgumentException(
+            "Cannot convert activity to MeetingDefinedActivityDTO"
+        );
+
+        return mapToDTO((MeetingDefinedActivity) activity);
+    }
 
     @Override
     default boolean canConvert(Activity activity) {

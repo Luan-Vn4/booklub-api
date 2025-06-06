@@ -14,7 +14,16 @@ public interface MemberCompletedReadingActivityMapper
     @Mapping(source = "bookUser.user.id", target = "userId")
     @Mapping(source = "bookUser.id.bookId", target = "bookId")
     @Mapping(source="club.id", target="clubId")
-    MemberCompletedReadingActivityDTO toDTO(MemberCompletedReadingActivity entity);
+    MemberCompletedReadingActivityDTO mapToDTO(MemberCompletedReadingActivity entity);
+
+    @Override
+    default MemberCompletedReadingActivityDTO toDTO(Activity activity) {
+        if (!canConvert(activity)) throw new IllegalArgumentException(
+            "Cannot convert activity to MemberCompletedReadingActivityDTO"
+        );
+
+        return mapToDTO((MemberCompletedReadingActivity) activity);
+    }
 
     @Override
     default boolean canConvert(Activity activity) {

@@ -1,6 +1,8 @@
 package br.upe.booklubapi.app.readinggoals.services;
 
 import br.upe.booklubapi.app.readinggoals.dtos.*;
+import br.upe.booklubapi.domain.activities.entities.clubactivities.ReadingGoalDefinedActivity;
+import br.upe.booklubapi.domain.activities.repositories.ActivityRepository;
 import br.upe.booklubapi.domain.clubs.entities.Club;
 import br.upe.booklubapi.domain.clubs.exceptions.ClubNotFoundException;
 import br.upe.booklubapi.domain.clubs.exceptions.UnauthorizedClubActionException;
@@ -16,6 +18,7 @@ import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
 import br.upe.booklubapi.utils.UserUtils;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -43,6 +46,8 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     private final QReadingGoal readingGoal = QReadingGoal.readingGoal;
 
     private final UserRepository userRepository;
+
+    private final ActivityRepository activityRepository;
 
     private User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(
@@ -91,6 +96,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     }
 
     @Override
+    @Transactional
     public ReadingGoalDTO addReadingGoal(
         UUID clubId,
         CreateReadingGoalDTO dto
@@ -116,13 +122,26 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
             dto,
             club
         );
+        final ReadingGoal createdReadingGoal = readingGoalRepository.save(readingGoal);
+
+        publishReadingGoal(createdReadingGoal);
 
         return readingGoalDTOMapper.toDto(
-            readingGoalRepository.save(readingGoal)
+            createdReadingGoal
         );
     }
 
+    private void publishReadingGoal(ReadingGoal readingGoal) {
+        final var activity = ReadingGoalDefinedActivity.builder()
+            .readingGoal(readingGoal)
+            .club(readingGoal.getClub())
+            .build();
+
+        activityRepository.save(activity);
+    }
+
     @Override
+    @Transactional
     public ReadingGoalDTO updateReadingGoal(
         UUID readingGoalId,
         UpdateReadingGoalDTO dto
@@ -219,6 +238,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     }
 
     @Override
+    @Transactional
     public void deleteReadingGoal(UUID id) {
         User loggedUser = getUser(userUtils.getLoggedUserId());
         ReadingGoal readingGoal = getReadingGoalById(id);

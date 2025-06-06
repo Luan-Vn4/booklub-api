@@ -13,7 +13,16 @@ public interface ReadingGoalDefinedActivityMapper
 
     @Mapping(source = "readingGoal.id", target = "readingGoalId")
     @Mapping(source="club.id", target="clubId")
-    ReadingGoalDefinedActivityDTO toDTO(ReadingGoalDefinedActivity entity);
+    ReadingGoalDefinedActivityDTO mapToDTO(ReadingGoalDefinedActivity entity);
+
+    @Override
+    default ReadingGoalDefinedActivityDTO toDTO(Activity activity) {
+        if (!canConvert(activity)) throw new IllegalArgumentException(
+            "Cannot convert activity to ReadingGoalDefinedActivityDTO"
+        );
+
+        return mapToDTO((ReadingGoalDefinedActivity) activity);
+    }
 
     @Override
     default boolean canConvert(Activity activity) {

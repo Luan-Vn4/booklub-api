@@ -5,9 +5,12 @@ import br.upe.booklubapi.app.meetings.exceptions.MeetingAlreadyDefinedException;
 import br.upe.booklubapi.app.meetings.exceptions.MeetingNotDefinedException;
 import br.upe.booklubapi.app.meetings.exceptions.MeetingNotFoundException;
 import br.upe.booklubapi.app.meetings.exceptions.NoNextMeetingException;
+import br.upe.booklubapi.domain.activities.entities.clubactivities.MeetingDefinedActivity;
+import br.upe.booklubapi.domain.activities.repositories.ActivityRepository;
 import br.upe.booklubapi.domain.meetings.entities.Meeting;
 import br.upe.booklubapi.domain.meetings.repositories.MeetingRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class MeetingServiceImpl implements MeetingService {
 
     private final MeetingDTOMapper meetingDTOMapper;
@@ -25,6 +29,8 @@ public class MeetingServiceImpl implements MeetingService {
     private final UpdateMeetingDTOMapper updateMeetingDTOMapper;
 
     private final MeetingRepository meetingRepository;
+
+    private final ActivityRepository activityRepository;
 
     private Meeting getMeeeting(UUID meetingId) {
         return meetingRepository
@@ -42,8 +48,20 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         final Meeting meeting = createMeetingDTOMapper.toEntity(dto);
+        final Meeting createdMeeting = meetingRepository.save(meeting);
 
-        return meetingDTOMapper.toDto(meetingRepository.save(meeting));
+        publishMeetingDefinedActivity(createdMeeting);
+
+        return meetingDTOMapper.toDto(createdMeeting);
+    }
+
+    private void publishMeetingDefinedActivity(Meeting meeting) {
+        final var activity = MeetingDefinedActivity.builder()
+            .club(meeting.getReadingGoal().getClub())
+            .meeting(meeting)
+            .build();
+
+        activityRepository.save(activity);
     }
 
     @Override
