@@ -23,7 +23,8 @@ public class ActivityDTOMapperResolver {
         Activity activity,
         Class<T> targetClass
     ) {
-        if (targetClass.isInstance(activity)) return targetClass.cast(activity);
+        final ActivityDTO dto = toDTO(activity);
+        if (targetClass.isInstance(dto)) return targetClass.cast(dto);
         throw new IllegalArgumentException(
             "Mapped DTO is not type %s"
                 .formatted(targetClass.getName())
