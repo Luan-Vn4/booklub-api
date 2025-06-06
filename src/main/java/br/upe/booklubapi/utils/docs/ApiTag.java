@@ -6,4 +6,6 @@ public abstract class ApiTag {
 
     public static final String MEETINGS = "Meetings";
 
+    public static final String ACTIVITIES = "Activities";
+
 }
