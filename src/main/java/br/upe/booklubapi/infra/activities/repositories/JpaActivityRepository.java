@@ -1,8 +1,6 @@
 package br.upe.booklubapi.infra.activities.repositories;
 
 import br.upe.booklubapi.domain.activities.entities.Activity;
-import br.upe.booklubapi.domain.activities.entities.clubactivities.ClubActivity;
-import br.upe.booklubapi.domain.activities.entities.useractivities.UserActivity;
 import br.upe.booklubapi.domain.activities.repositories.ActivityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,13 +31,5 @@ public interface JpaActivityRepository
                 ))
     """)
     Page<Activity> findActivitiesForUser(UUID userId, Pageable pageable);
-
-    @Override
-    @Query("SELECT a FROM ClubActivity a WHERE a.club.id=:clubId")
-    Page<ClubActivity> findAllByClubId(UUID clubId, Pageable pageable);
-
-    @Override
-    @Query("SELECT a FROM UserActivity a WHERE a.user.id=:userId")
-    Page<UserActivity> findAllByUserId(UUID userId, Pageable pageable);
 
 }

@@ -5,6 +5,8 @@ import br.upe.booklubapi.app.activities.dtos.ClubActivityDTO;
 import br.upe.booklubapi.app.activities.dtos.UserActivityDTO;
 import br.upe.booklubapi.app.activities.mappers.ActivityDTOMapperResolver;
 import br.upe.booklubapi.domain.activities.repositories.ActivityRepository;
+import br.upe.booklubapi.domain.activities.repositories.ClubActivityRepository;
+import br.upe.booklubapi.domain.activities.repositories.UserActivityRepository;
 import br.upe.booklubapi.utils.UserUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,10 @@ import java.util.UUID;
 public class ActivitiesServiceImpl implements ActivitiesService {
 
     private final ActivityRepository activityRepository;
+
+    private final ClubActivityRepository clubActivityRepository;
+
+    private final UserActivityRepository userActivityRepository;
 
     private final ActivityDTOMapperResolver mapper;
 
@@ -39,7 +45,7 @@ public class ActivitiesServiceImpl implements ActivitiesService {
         Pageable pageable
     ) {
         return new PagedModel<>(
-            activityRepository.findAllByClubId(clubId, pageable)
+            clubActivityRepository.findAllByClubId(clubId, pageable)
                 .map(activity -> mapper.toDTO(activity,  ClubActivityDTO.class))
         );
     }
@@ -50,7 +56,7 @@ public class ActivitiesServiceImpl implements ActivitiesService {
         Pageable pageable
     ) {
         return new PagedModel<>(
-            activityRepository.findAllByUserId(userId, pageable)
+            userActivityRepository.findAllByUserId(userId, pageable)
                 .map(activity -> mapper.toDTO(activity,  UserActivityDTO.class))
         );
     }
