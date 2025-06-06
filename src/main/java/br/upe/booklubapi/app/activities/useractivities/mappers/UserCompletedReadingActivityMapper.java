@@ -1,7 +1,6 @@
 package br.upe.booklubapi.app.activities.useractivities.mappers;
 
 import br.upe.booklubapi.app.activities.mappers.ActivityDTOMapper;
-import br.upe.booklubapi.app.activities.mappers.UnimplementedActivityDTOMapper;
 import br.upe.booklubapi.app.activities.useractivities.dtos.UserCompletedReadingActivityDTO;
 import br.upe.booklubapi.domain.activities.entities.Activity;
 import br.upe.booklubapi.domain.activities.entities.useractivities.UserCompletedReadingActivity;
