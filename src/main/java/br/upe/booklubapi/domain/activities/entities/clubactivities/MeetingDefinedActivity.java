@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name="meeting_defined_activities")
@@ -19,6 +21,7 @@ public class MeetingDefinedActivity extends ClubActivity {
     @OneToOne
     @NotNull
     @JoinColumn(name="meeting_id")
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Meeting meeting;
 
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name="user_completed_reading_activities")
@@ -22,6 +24,7 @@ public class UserCompletedReadingActivity extends UserActivity {
         @JoinColumn(name="user_id", referencedColumnName="user_id"),
         @JoinColumn(name="book_id", referencedColumnName="book_id")
     })
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private BookUser bookUser;
 
 }
