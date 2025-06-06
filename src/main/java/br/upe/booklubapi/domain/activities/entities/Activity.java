@@ -1,4 +1,4 @@
-package br.upe.booklubapi.domain.activities;
+package br.upe.booklubapi.domain.activities.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package br.upe.booklubapi.app.activities.clubactivities.dtos;
 
-import br.upe.booklubapi.domain.activities.clubactivities.MemberCompletedReadingActivity;
+import br.upe.booklubapi.domain.activities.entities.clubactivities.MemberCompletedReadingActivity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

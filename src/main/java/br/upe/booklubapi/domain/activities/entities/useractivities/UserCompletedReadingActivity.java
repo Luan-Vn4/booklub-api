@@ -1,4 +1,4 @@
-package br.upe.booklubapi.domain.activities.useractivities;
+package br.upe.booklubapi.domain.activities.entities.useractivities;
 
 import br.upe.booklubapi.domain.books.entities.BookUser;
 import jakarta.persistence.*;

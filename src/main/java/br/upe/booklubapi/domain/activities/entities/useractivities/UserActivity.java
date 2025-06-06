@@ -1,6 +1,6 @@
-package br.upe.booklubapi.domain.activities.useractivities;
+package br.upe.booklubapi.domain.activities.entities.useractivities;
 
-import br.upe.booklubapi.domain.activities.Activity;
+import br.upe.booklubapi.domain.activities.entities.Activity;
 import br.upe.booklubapi.domain.users.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
