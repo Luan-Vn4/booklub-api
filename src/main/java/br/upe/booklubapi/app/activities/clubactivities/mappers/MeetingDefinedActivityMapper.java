@@ -12,7 +12,7 @@ public interface MeetingDefinedActivityMapper
         extends ActivityDTOMapper<MeetingDefinedActivityDTO> {
 
     @Mapping(source="meeting.id", target="meetingId")
-    @Mapping(source="club.id", target="")
+    @Mapping(source="club.id", target="clubId")
     MeetingDefinedActivityDTO toDTO(MeetingDefinedActivity entity);
 
     @Override
