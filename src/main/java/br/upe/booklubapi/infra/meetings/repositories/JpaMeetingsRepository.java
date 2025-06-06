@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +16,16 @@ public interface JpaMeetingsRepository
         extends MeetingRepository,
                 JpaRepository<Meeting, UUID>,
                 QuerydslPredicateExecutor<Meeting> {
+
+    @Override
+    default <S extends Meeting> S save(S entity) {
+        return saveAndFlush(entity);
+    }
+
+    @Override
+    default <S extends Meeting> List<S> saveAll(Iterable<S> entities) {
+        return saveAllAndFlush(entities);
+    }
 
     @Override
     @Query("""

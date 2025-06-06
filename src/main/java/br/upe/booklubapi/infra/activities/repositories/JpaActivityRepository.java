@@ -8,11 +8,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
+import java.util.List;
 import java.util.UUID;
 
 public interface JpaActivityRepository
         extends JpaRepository<Activity, UUID>, ActivityRepository {
+
+    @Override
+    default <S extends Activity> S save(S entity) {
+        return saveAndFlush(entity);
+    }
+
+    @Override
+    default <S extends Activity> List<S> saveAll(Iterable<S> entities) {
+        return saveAllAndFlush(entities);
+    }
 
     @Override
     @Query("""

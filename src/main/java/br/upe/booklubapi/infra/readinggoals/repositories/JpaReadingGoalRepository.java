@@ -30,6 +30,16 @@ public interface JpaReadingGoalRepository
                 UserReadingGoalRepository {
 
     @Override
+    default <S extends ReadingGoal> S save(S entity) {
+        return saveAndFlush(entity);
+    }
+
+    @Override
+    default <S extends ReadingGoal> List<S> saveAll(Iterable<S> entities) {
+        return saveAllAndFlush(entities);
+    }
+
+    @Override
     @Query("""
         SELECT r FROM ReadingGoal r
             WHERE CURRENT TIMESTAMP BETWEEN r.startDate AND r.endDate
