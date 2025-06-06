@@ -2,7 +2,7 @@ package br.upe.booklubapi.app.activities.dtos;
 
 import java.util.UUID;
 
-public interface UserActivityDTO {
+public interface UserActivityDTO extends ActivityDTO {
 
     UUID userId();
 

@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.UUID;
 
 @Entity
 @Table(name="club_activities")
@@ -24,6 +23,6 @@ public abstract class ClubActivity extends Activity {
     @ManyToOne(targetEntity=Club.class, fetch=FetchType.EAGER)
     @JoinColumn(name="club_id")
     @NotNull
-    private UUID clubId;
+    private Club club;
 
 }
