@@ -24,7 +24,6 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequestMapping("/api/v1/auth")
-@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 public class AuthController {
