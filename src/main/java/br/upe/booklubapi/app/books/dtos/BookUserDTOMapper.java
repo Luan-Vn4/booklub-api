@@ -1,14 +1,14 @@
 package br.upe.booklubapi.app.books.dtos;
 
+import br.upe.booklubapi.domain.books.entities.BookUser;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-import java.util.UUID;
 
-import br.upe.booklubapi.domain.books.entities.BookUser;
+import java.util.UUID;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -18,6 +18,7 @@ import br.upe.booklubapi.domain.books.entities.BookUser;
 public interface BookUserDTOMapper {
 
     @Mapping(source="bookId", target="id.bookId")
+    @Mapping(source="userId", target="id.userId")
     @Mapping(target="user", source="userId", qualifiedByName="userIdToUser")
     BookUser toEntity(BookUserDTO dto);
 

@@ -1,26 +1,13 @@
 package br.upe.booklubapi.domain.books.entities;
-import br.upe.booklubapi.domain.books.entities.BookUserId;
-
-import java.util.UUID;
-
-import org.hibernate.validator.constraints.Range;
 
 import br.upe.booklubapi.domain.users.entities.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Getter
@@ -42,4 +29,9 @@ public class BookUser {
     @NotNull
     @Range(min=0, max=1)
     private Double progress;
+
+    public boolean hasFinishedBook() {
+        return progress.equals(1.0);
+    }
+
 }

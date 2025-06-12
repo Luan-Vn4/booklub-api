@@ -1,17 +1,17 @@
 package br.upe.booklubapi.domain.books.entities;
 
-import java.util.Objects;
-import java.util.UUID;
-
-import org.hibernate.annotations.Type;
-
 import br.upe.booklubapi.utils.hibernate.UUIDVarcharType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+
+import java.util.Objects;
+import java.util.UUID;
 
 @Embeddable
 @AllArgsConstructor
@@ -19,8 +19,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookUserId {
+
     @Column(name="book_id")
-    private UUID bookId;
+    private String bookId;
 
     @Column(name="user_id", columnDefinition = "varchar(36)")
     @Type(UUIDVarcharType.class)

@@ -3,20 +3,16 @@ package br.upe.booklubapi.infra.books.repositories;
 import br.upe.booklubapi.domain.books.entities.BookUser;
 import br.upe.booklubapi.domain.books.entities.BookUserId;
 import br.upe.booklubapi.domain.books.repositories.BookProgressRepository;
-import br.upe.booklubapi.domain.clubs.entities.ClubPendingEntry;
-import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
-
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public interface JpaBookProgressRepository
         extends JpaRepository<BookUser, BookUserId>, BookProgressRepository {
+
     @Query(value = """
                 SELECT AVG(bu.progress)
                 FROM clubs c
@@ -26,6 +22,6 @@ public interface JpaBookProgressRepository
                 AND bu.book_id = :bookId
             """, nativeQuery = true)
     @Override
-    Double findByClubId(UUID clubId, UUID bookId);
+    Double findByClubId(UUID clubId, String bookId);
 
 }

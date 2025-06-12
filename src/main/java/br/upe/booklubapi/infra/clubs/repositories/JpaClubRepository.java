@@ -14,9 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,7 +26,17 @@ import java.util.UUID;
 @Repository
 public interface JpaClubRepository
         extends JpaRepository<Club, UUID>, ClubRepository, ClubMembersRepository,
-            QuerydslPredicateExecutor<Club> {}
+            QuerydslPredicateExecutor<Club> {
+
+    @Query("""
+        SELECT c FROM Club c WHERE c IN (
+            SELECT rg.club FROM ReadingGoal rg
+                WHERE rg.bookId=:bookId
+        )
+    """)
+    Page<Club> findAllClubsByReadingGoalBookId(String bookId, Pageable pageable);
+
+}
 
 @Component
 @AllArgsConstructor
@@ -49,15 +61,20 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
             .on(predicate)
             .fetchOne();
 
-        final List<User> result = new JPAQuery<>(em)
+        JPAQuery<User> resultQuery = new JPAQuery<>(em)
             .select(user)
             .from(club)
             .where(club.id.eq(clubId))
             .join(club.members, user)
-            .on(predicate)
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
+            .on(predicate);
+
+        if (pageable.isPaged()) {
+            resultQuery = resultQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+        }
+
+        final List<User> result = resultQuery.fetch();
 
         return new PageImpl<>(
             result,
@@ -83,15 +100,20 @@ class JpaClubRepositoryCustomImpl implements ClubMembersRepository {
             .on(user.clubs.contains(club).and(predicate))
             .fetchOne();
 
-        final List<Club> result = new JPAQuery<>(em)
+        JPAQuery<Club> resultQuery =  new JPAQuery<>(em)
             .select(club)
             .from(user)
             .where(user.id.eq(userId))
             .join(user.clubs, club)
-            .on(user.clubs.contains(club).and(predicate))
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
+            .on(user.clubs.contains(club).and(predicate));
+
+        if (pageable.isPaged()) {
+            resultQuery = resultQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+        }
+
+        final List<Club> result = resultQuery.fetch();
 
         return new PageImpl<>(
             result,
