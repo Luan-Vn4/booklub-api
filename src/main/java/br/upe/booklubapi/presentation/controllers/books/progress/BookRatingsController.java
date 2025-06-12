@@ -9,6 +9,8 @@ import br.upe.booklubapi.utils.docs.ApiTag;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +71,28 @@ public class BookRatingsController {
     ) {
         return ResponseEntity.ok(
             bookRatingsService.findById(new BookUserId(bookId, userId))
+        );
+    }
+
+    @GetMapping("/api/v1/users/{userId}/book-ratings")
+    public ResponseEntity<PagedModel<BookRatingsDTO>> findByUserId(
+        @PathVariable(name="userId")
+        UUID userId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            bookRatingsService.findByUserId(userId, pageable)
+        );
+    }
+
+    @GetMapping("/api/v1/books/{bookId}/book-ratings")
+    public ResponseEntity<PagedModel<BookRatingsDTO>> findByBookId(
+        @PathVariable(name="bookId")
+        String bookId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+            bookRatingsService.findByBookId(bookId, pageable)
         );
     }
 

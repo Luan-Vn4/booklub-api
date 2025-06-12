@@ -5,12 +5,9 @@ import br.upe.booklubapi.domain.books.entities.BookUserId;
 import br.upe.booklubapi.domain.users.entities.User;
 import br.upe.booklubapi.domain.users.exceptions.UserNotFoundException;
 import br.upe.booklubapi.domain.users.repository.UserRepository;
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,

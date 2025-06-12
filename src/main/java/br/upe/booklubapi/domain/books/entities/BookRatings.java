@@ -12,7 +12,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Range;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity

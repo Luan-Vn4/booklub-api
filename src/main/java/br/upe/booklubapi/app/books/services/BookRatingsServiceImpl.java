@@ -7,7 +7,11 @@ import br.upe.booklubapi.domain.books.exceptions.BookRatingsNotFoundException;
 import br.upe.booklubapi.domain.books.repositories.BookRatingsRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -71,6 +75,22 @@ public class BookRatingsServiceImpl implements BookRatingsService {
         BookRatings ratings = bookRatingsRepository.findById(bookUserId)
         .orElseThrow(() -> new BookRatingsNotFoundException(bookUserId));
         return bookRatingsDTOMapper.toDTO(ratings);
+    }
+
+    @Override
+    public PagedModel<BookRatingsDTO> findByBookId(String bookId, Pageable pageable) {
+        return new PagedModel<>(
+            bookRatingsRepository.findByBookId(bookId, pageable)
+                .map(bookRatingsDTOMapper::toDTO)
+        );
+    }
+
+    @Override
+    public PagedModel<BookRatingsDTO> findByUserId(UUID userId, Pageable pageable) {
+        return new PagedModel<>(
+            bookRatingsRepository.findByUserId(userId, pageable)
+                .map(bookRatingsDTOMapper::toDTO)
+        );
     }
 
 }
