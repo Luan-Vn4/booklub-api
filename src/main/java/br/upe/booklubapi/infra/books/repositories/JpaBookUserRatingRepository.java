@@ -8,6 +8,20 @@ import org.springframework.stereotype.Repository;
 
 import br.upe.booklubapi.domain.books.repositories.BookRatingsRepository;
 
+import java.util.List;
+
 @Repository
-public interface JpaBookUserRatingRepository extends JpaRepository<BookRatings, BookUserId>, BookRatingsRepository {
+public interface JpaBookUserRatingRepository
+        extends JpaRepository<BookRatings, BookUserId>, BookRatingsRepository {
+
+    @Override
+    default <S extends BookRatings> S save(S entity) {
+        return saveAndFlush(entity);
+    }
+
+    @Override
+    default <S extends BookRatings> List<S> saveAll(Iterable<S> entities) {
+        return saveAllAndFlush(entities);
+    }
+
 }

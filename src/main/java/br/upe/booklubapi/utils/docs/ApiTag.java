@@ -8,4 +8,8 @@ public abstract class ApiTag {
 
     public static final String ACTIVITIES = "Activities";
 
+    public static final String BOOK_USER = "User's Books";
+
+    public static final String BOOK_RATINGS = "Book Ratings";
+
 }

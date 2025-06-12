@@ -1,16 +1,20 @@
 package br.upe.booklubapi.app.books.services;
 
-import java.util.UUID;
-
-import br.upe.booklubapi.app.books.dtos.BookRatingsDTO;
+import br.upe.booklubapi.app.books.dtos.bookratings.BookRatingsDTO;
+import br.upe.booklubapi.app.books.dtos.bookratings.CreateBookRatingsDTO;
+import br.upe.booklubapi.app.books.dtos.bookratings.UpdateBookRatingsDTO;
 import br.upe.booklubapi.domain.books.entities.BookUserId;
 
+import java.util.UUID;
+
 public interface BookRatingsService {
-    BookRatingsDTO findById(UUID userId, UUID bookId);
 
-    BookRatingsDTO save(BookRatingsDTO saveDTO);
+    BookRatingsDTO findById(BookUserId bookUserId);
 
-    BookRatingsDTO update(BookRatingsDTO dto);
+    BookRatingsDTO save(BookUserId bookUserId, CreateBookRatingsDTO dto);
 
-    void delete(UUID userId, UUID bookId);
+    BookRatingsDTO update(BookUserId bookUserId, UpdateBookRatingsDTO dto);
+
+    void delete(BookUserId bookUserId);
+
 }

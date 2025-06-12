@@ -1,46 +1,75 @@
 package br.upe.booklubapi.presentation.controllers.books.progress;
 
+import br.upe.booklubapi.app.books.dtos.bookratings.BookRatingsDTO;
+import br.upe.booklubapi.app.books.dtos.bookratings.CreateBookRatingsDTO;
+import br.upe.booklubapi.app.books.dtos.bookratings.UpdateBookRatingsDTO;
+import br.upe.booklubapi.app.books.services.BookRatingsService;
+import br.upe.booklubapi.domain.books.entities.BookUserId;
+import br.upe.booklubapi.utils.docs.ApiTag;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.upe.booklubapi.app.books.dtos.BookRatingsDTO;
-import br.upe.booklubapi.app.books.services.BookRatingsService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import lombok.AllArgsConstructor;
-
 @RestController
-@RequestMapping("api/v1/book-ratings")
 @AllArgsConstructor
+@Tag(name=ApiTag.BOOK_RATINGS)
 public class BookRatingsController {
+
     private final BookRatingsService bookRatingsService;
 
-    @PostMapping
-    public ResponseEntity<BookRatingsDTO> create(@RequestBody BookRatingsDTO saveDTO) {
-        return ResponseEntity.ok(bookRatingsService.save(saveDTO));
+    @PostMapping("/api/v1/users/{userId}/book-ratings/{bookId}")
+    public ResponseEntity<BookRatingsDTO> create(
+        @Valid
+        @RequestBody CreateBookRatingsDTO dto,
+        @PathVariable("userId")
+        UUID userId,
+        @PathVariable("bookId")
+        String bookId
+    ) {
+        return ResponseEntity.ok(
+            bookRatingsService.save(new BookUserId(bookId, userId), dto)
+        );
     }
 
-    @PutMapping
-    public ResponseEntity<BookRatingsDTO> update(@RequestBody BookRatingsDTO updateDTO) {
-        return ResponseEntity.ok(bookRatingsService.update(updateDTO));
+    @PutMapping("/api/v1/users/{userId}/book-ratings/{bookId}")
+    public ResponseEntity<BookRatingsDTO> update(
+        @Valid
+        @RequestBody UpdateBookRatingsDTO dto,
+        @PathVariable("userId")
+        UUID userId,
+        @PathVariable("bookId")
+        String bookId
+    ) {
+        return ResponseEntity.ok(
+            bookRatingsService.update(new BookUserId(bookId, userId), dto)
+        );
     }
 
-    @DeleteMapping("/user/{user-id}/book/{book-id}")
-    public ResponseEntity<Void> delete(@PathVariable("user-id") UUID userId, @PathVariable("book-id") UUID bookId) {
-        bookRatingsService.delete(userId, bookId);
+    @DeleteMapping("api/v1/users/{userId}/book-ratings/{bookId}")
+    public ResponseEntity<Void> delete(
+        @PathVariable("userId")
+        UUID userId,
+        @PathVariable("bookId")
+        String bookId
+    ) {
+        bookRatingsService.delete(new BookUserId(bookId, userId));
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/{user-id}/book/{book-id}")
-    public ResponseEntity<BookRatingsDTO> findById(@PathVariable("user-id") UUID userId, @PathVariable("book-id") UUID bookId) {
-        return ResponseEntity.ok(bookRatingsService.findById(userId, bookId));
+    @GetMapping("api/v1/users/{userId}/book-ratings/{bookId}")
+    public ResponseEntity<BookRatingsDTO> findById(
+        @PathVariable("userId")
+        UUID userId,
+        @PathVariable("bookId")
+        String bookId
+    ) {
+        return ResponseEntity.ok(
+            bookRatingsService.findById(new BookUserId(bookId, userId))
+        );
     }
+
 }

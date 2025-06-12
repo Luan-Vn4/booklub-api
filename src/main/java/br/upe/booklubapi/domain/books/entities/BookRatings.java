@@ -1,28 +1,19 @@
 package br.upe.booklubapi.domain.books.entities;
-import br.upe.booklubapi.domain.books.entities.BookUserId;
-import java.time.LocalDate;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.Range;
 
 import br.upe.booklubapi.domain.users.entities.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Range;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -43,16 +34,21 @@ public class BookRatings {
 
     @NotNull
     @Range(min=0, max=5)
-    private short rating;
+    @Column(name = "rating")
+    private Short rating;
     
     @NotNull
     @Range(min=0, max=5)
-    private short dificulty;
+    @Column(name = "difficulty")
+    private Short difficulty;
 
-    @NotNull
+    @Nullable
     @Size(max = 500)
+    @Column(name="review")
     private String review;
 
-    @Column(name = "created_at")
-    private LocalDate createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
 }

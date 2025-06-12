@@ -2,6 +2,8 @@ package br.upe.booklubapi.presentation.controllers.books.progress;
 
 import br.upe.booklubapi.app.books.dtos.BookUserDTO;
 import br.upe.booklubapi.app.books.services.BookUserService;
+import br.upe.booklubapi.utils.docs.ApiTag;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/book-user")
 @AllArgsConstructor
+@Tag(name=ApiTag.BOOK_USER)
 public class BookUserController {
 
     private final BookUserService bookUserService;

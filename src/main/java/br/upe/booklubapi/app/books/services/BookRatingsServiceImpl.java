@@ -1,30 +1,33 @@
 package br.upe.booklubapi.app.books.services;
 
-import br.upe.booklubapi.app.books.dtos.BookRatingsDTO;
-import br.upe.booklubapi.app.books.dtos.BookRatingsDTOMapper;
-import br.upe.booklubapi.app.books.dtos.UpdateBookRatingsDTOMapper;
-import br.upe.booklubapi.domain.books.entities.BookUserId;
+import br.upe.booklubapi.app.books.dtos.bookratings.*;
 import br.upe.booklubapi.domain.books.entities.BookRatings;
-import br.upe.booklubapi.domain.books.repositories.BookRatingsRepository;
-import lombok.AllArgsConstructor;
-
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
+import br.upe.booklubapi.domain.books.entities.BookUserId;
 import br.upe.booklubapi.domain.books.exceptions.BookRatingsNotFoundException;
+import br.upe.booklubapi.domain.books.repositories.BookRatingsRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class BookRatingsServiceImpl implements BookRatingsService {
+
     private final BookRatingsRepository bookRatingsRepository;
+
     private final BookRatingsDTOMapper bookRatingsDTOMapper;
+
+    private final CreateBookRatingsDTOMapper createBookRatingsDTOMapper;
+
     private final UpdateBookRatingsDTOMapper updateBookRatingsDTOMapper;
 
     @Override
-    public BookRatingsDTO save(BookRatingsDTO saveDTO) {
-        final BookRatings ratingsEntity = bookRatingsDTOMapper.toEntity(saveDTO);
+    @Transactional
+    public BookRatingsDTO save(BookUserId bookUserId, CreateBookRatingsDTO dto) {
+        final BookRatings ratingsEntity = createBookRatingsDTOMapper.toEntity(
+            dto,
+            bookUserId
+        );
         
         final BookRatings saved = bookRatingsRepository.save(ratingsEntity);
 
@@ -33,38 +36,41 @@ public class BookRatingsServiceImpl implements BookRatingsService {
 
     @Override
     @Transactional
-    public BookRatingsDTO update(BookRatingsDTO dto) {
-        BookUserId id = new BookUserId(dto.userId(), dto.bookId());
-
-        BookRatings current = bookRatingsRepository.findById(id).orElseThrow(
-            () -> new BookRatingsNotFoundException(id)
+    public BookRatingsDTO update(
+        BookUserId bookUserId,
+        UpdateBookRatingsDTO dto
+    ) {
+        BookRatings current = bookRatingsRepository.findById(bookUserId)
+            .orElseThrow(() -> new BookRatingsNotFoundException(bookUserId)
         );
 
-        final BookRatings updated = updateBookRatingsDTOMapper.partialUpdate(dto, current);
-
-        bookRatingsRepository.save(current);
+        final BookRatings updated = bookRatingsRepository.save(
+            updateBookRatingsDTOMapper.partialUpdate(
+                dto,
+                current,
+                bookUserId.getUserId(),
+                bookUserId.getBookId()
+            )
+        );
 
         return bookRatingsDTOMapper.toDTO(updated);
     }
 
     @Override
-    public void delete(UUID userId, UUID bookId) {
-        BookUserId id = new BookUserId(userId, bookId);
+    @Transactional
+    public void delete(BookUserId bookUserId) {
+        boolean ratingsExist = bookRatingsRepository.existsById(bookUserId);
         
-        boolean ratingsExist = bookRatingsRepository.existsById(id);
+        if (!ratingsExist) throw new BookRatingsNotFoundException(bookUserId);
         
-        if (!ratingsExist) throw new BookRatingsNotFoundException(id);
-        
-        bookRatingsRepository.deleteById(id);
+        bookRatingsRepository.deleteById(bookUserId);
     }
     
     @Override
-    public BookRatingsDTO findById(UUID userId, UUID bookId) {
-        BookUserId id = new BookUserId(userId, bookId);
-        
-        BookRatings ratings = bookRatingsRepository.findById(id)
-        .orElseThrow(() -> new BookRatingsNotFoundException(id));
-        
+    public BookRatingsDTO findById(BookUserId bookUserId) {
+        BookRatings ratings = bookRatingsRepository.findById(bookUserId)
+        .orElseThrow(() -> new BookRatingsNotFoundException(bookUserId));
         return bookRatingsDTOMapper.toDTO(ratings);
     }
+
 }
