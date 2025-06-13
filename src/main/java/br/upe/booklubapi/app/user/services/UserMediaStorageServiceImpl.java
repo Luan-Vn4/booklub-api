@@ -16,6 +16,8 @@ public class UserMediaStorageServiceImpl implements UserMediaStorageService {
 
     private final MediaStorageGateway gateway;
 
+    private static final String profilePictureDirectory = "users/profile-pictures";
+
     @Override
     public String saveProfilePicture(MultipartFile image, UUID userId) {
         final String extension = StringUtils.getFilenameExtension(
@@ -32,7 +34,9 @@ public class UserMediaStorageServiceImpl implements UserMediaStorageService {
             );
         }
 
-        return gateway.uploadObject("images", userId.toString(), image);
+        final String objectName = profilePictureDirectory + "/" + userId;
+
+        return gateway.uploadObject("images", objectName, image);
     }
 
     @Override

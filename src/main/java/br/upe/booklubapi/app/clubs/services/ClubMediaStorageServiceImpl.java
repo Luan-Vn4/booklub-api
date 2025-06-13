@@ -16,6 +16,8 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
 
     private final MediaStorageGateway gateway;
 
+    private static final String clubPictureDirectory = "clubs/pictures";
+
     @Override
     public String saveClubPicture(MultipartFile image, UUID clubId) {
         if(image == null || image.isEmpty()) {
@@ -35,7 +37,9 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
             );
         }
 
-        return gateway.uploadObject("images", clubId.toString(), image);
+        final String objectName = clubPictureDirectory + "/" + clubId;
+
+        return gateway.uploadObject("images", objectName, image);
     }
 
     @Override
