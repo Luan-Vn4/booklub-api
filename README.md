@@ -30,6 +30,7 @@ ou enviado a este repositório.
 Conforme o desenvolvimento, podem surgir mais configurações de ambiente a serem
 definidas. Portanto, como guia para essas configurações, cada elemento do `.env`
 será adicionado nesta seção.
+- `SERVER_PORT`: Porta na qual a API estará acessível
 - `DB_URL`: *Url* do banco de dados que será utilizado para persistir
   os dados da *API*
 - `DB_USER`: Usuário do banco de dados através do qual será feita a conexão
@@ -37,6 +38,13 @@ será adicionado nesta seção.
 - `S3_URL`: Url do *media storage* com padrão *S3* utilizado para armazenar arquivos de mídia da *API*
 - `S3_ACCESS_NAME`: Nome de usuário com o qual logar no serviço de *media storage S3* 
 - `S3_ACCESS_SECRET`: Senha de acesso ao *media storage S3*
+- `S3_REGION`: Região de localização do armazenamento S3
+- `GOOGLE_BOOKS_API_BASE_URL`: Url para acesso à API do google books
+- `GOOGLE_BOOKS_API_KEY`: Chave utilizada pelo projeto do Google Books que está sendo utilizado
+- `KEYCLOAK_CLIENT_ID`: Identificador do cliente configurado no Keycloak para autenticar a *API*
+- `KEYCLOAK_CLIENT_SECRET`: Segredo do cliente configurado no Keycloak, utilizado na autenticação da *API*
+- `KEYCLOAK_REALM`: Nome do *realm* configurado no Keycloak onde o cliente está registrado
+- `KEYCLOAK_AUTH_URL`: *Url* de autenticação do Keycloak, onde serão realizadas as requisições de login e validação de token
 
 ### *Docker Compose*
 Para facilitar o desenvolvimento, é fornecido um arquivo `compose.yml` que
