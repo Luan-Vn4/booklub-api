@@ -32,16 +32,7 @@ public class UserMediaStorageServiceImpl implements UserMediaStorageService {
             );
         }
 
-        final String objectName = generateObjectName(userId, extension);
-
-        return gateway.uploadObject("images", objectName, image);
-    }
-
-    private String generateObjectName(UUID userId, String fileExtension) {
-        return "/users/profile-picture/%s.%s".formatted(
-            userId,
-            fileExtension
-        );
+        return gateway.uploadObject("images", userId.toString(), image);
     }
 
     @Override

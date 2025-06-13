@@ -35,16 +35,7 @@ public class ClubMediaStorageServiceImpl implements ClubMediaStorageService {
             );
         }
 
-        final String objectName = generateObjectName(clubId, extension);
-
-        return gateway.uploadObject("images", objectName, image);
-    }
-
-    private String generateObjectName(UUID clubId, String fileExtension) {
-        return "/clubs/profile-picture/%s.%s".formatted(
-            clubId.toString(),
-            fileExtension
-        );
+        return gateway.uploadObject("images", clubId.toString(), image);
     }
 
     @Override
