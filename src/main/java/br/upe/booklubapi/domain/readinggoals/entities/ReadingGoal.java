@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.proxy.HibernateProxy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +42,7 @@ public class ReadingGoal {
     @ManyToOne
     @JoinColumn(name="club_id")
     @NotNull
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Club club;
 
     @Column(name="start_date")

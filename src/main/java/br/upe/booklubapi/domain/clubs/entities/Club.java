@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -44,6 +47,7 @@ public class Club {
     @ManyToOne
     @JoinColumn(name="owner_id")
     @NotNull
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private User owner;
 
     @ManyToMany
@@ -54,6 +58,7 @@ public class Club {
     )
     @Setter(AccessLevel.PRIVATE)
     @NotNull
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<User> members = new HashSet<>();
 
     public Club(

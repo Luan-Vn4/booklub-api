@@ -1,0 +1,9 @@
+ALTER TABLE clubs_users DROP CONSTRAINT clubs_users_club_id_fkey;
+
+ALTER TABLE clubs_users DROP CONSTRAINT clubs_users_user_id_fkey;
+
+ALTER TABLE clubs_users ADD CONSTRAINT CLUBS_USERS_CLUB_ID_FKEY
+    FOREIGN KEY (club_id) REFERENCES clubs (id) ON DELETE CASCADE;
+
+ALTER TABLE clubs_users ADD CONSTRAINT CLUBS_USERS_USER_ID_FKEY
+    FOREIGN KEY (user_id) REFERENCES user_entity (id) ON DELETE CASCADE;

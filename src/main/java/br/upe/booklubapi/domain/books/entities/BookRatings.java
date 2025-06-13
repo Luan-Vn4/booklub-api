@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDateTime;
@@ -29,7 +31,10 @@ public class BookRatings {
     @JoinColumn(name = "user_id")
     @MapsId("userId")
     @NotNull
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    // TODO adicionar entidade de clube aqui
 
     @NotNull
     @Range(min=0, max=5)
