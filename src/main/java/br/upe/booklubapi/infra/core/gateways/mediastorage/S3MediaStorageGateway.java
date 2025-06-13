@@ -91,6 +91,7 @@ public class S3MediaStorageGateway implements MediaStorageGateway {
                 PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(object)
+                    .contentType(file.getContentType())
                     .build(),
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize())
             );
@@ -116,7 +117,6 @@ public class S3MediaStorageGateway implements MediaStorageGateway {
             final var getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucket)
                 .key(object)
-
                 .build();
 
             final Duration duration = UnitUtils
