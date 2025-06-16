@@ -68,6 +68,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
     }
 
     private void checkConflictingReadingGoalDates(
+        UUID clubId,
         LocalDate startDate,
         LocalDate endDate,
         Optional<UUID> excludeId
@@ -82,7 +83,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         ).or(
             readingGoal.endDate.goe(startDate)
             .and(readingGoal.endDate.loe(endDate))
-        );
+        ).and(readingGoal.club.id.eq(clubId));
 
         if (excludeId.isPresent()) {
             query = query.and(readingGoal.id.ne(excludeId.get()));
@@ -113,6 +114,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         }
 
         checkConflictingReadingGoalDates(
+            clubId,
             dto.startDate(),
             dto.endDate(),
             Optional.empty()
@@ -159,6 +161,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         }
 
         checkConflictingReadingGoalDates(
+            club.getId(),
             dto.startDate(),
             dto.endDate(),
             Optional.of(readingGoalId)
@@ -178,6 +181,7 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
         Pageable pageable,
         ReadingGoalQueryDTO dto
     ) {
+        QReadingGoal readingGoal = QReadingGoal.readingGoal;
         User loggedUser = getUser(userUtils.getLoggedUserId());
         Club club = getClub(clubId);
 
@@ -191,7 +195,8 @@ public class ReadingGoalServiceImpl implements ReadingGoalService {
 
         return new PagedModel<>(
             readingGoalRepository.findAll(
-                dto.getQuery(readingGoal),
+                dto.getQuery(readingGoal)
+                    .and(readingGoal.club.id.eq(club.getId())),
                 pageable
             ).map(readingGoalDTOMapper::toDto)
         );
