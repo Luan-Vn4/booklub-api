@@ -1,5 +1,6 @@
 package br.upe.booklubapi.app.books.dtos;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class VolumeInfo {
     private List<String> authors;
     private String description;
     private ImageLinks imageLinks;
+    private LocalDate publishedDate;
     private List<IndustryIdentifier> industryIdentifiers;
 }
 

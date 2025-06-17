@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BookVolume {
+    private String id;
     private VolumeInfo volumeInfo;
 }
