@@ -41,6 +41,7 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
     private BookItem convertToBookItem(BookVolume volume) {
         VolumeInfo info = volume.getVolumeInfo();
 
+        String id = volume.getId();
         String title = info.getTitle();
         String authors = info.getAuthors() != null ? String.join(", ", info.getAuthors()) : null;
         String description = info.getDescription();
@@ -49,13 +50,16 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
         String isbn = info.getIndustryIdentifiers() != null && !info.getIndustryIdentifiers().isEmpty()
                 ? info.getIndustryIdentifiers().get(0).getIdentifier()
                 : null;
+        String publishedDate = String.valueOf(info.getPublishedDate());
 
         BookItem item = new BookItem();
+        item.setId(id);
         item.setTitle(title);
         item.setAuthors(authors);
         item.setDescription(description);
         item.setThumbnail(thumbnail);
         item.setIsbn(isbn);
+        item.setPublishedDate(publishedDate);
 
         return item;
     }
