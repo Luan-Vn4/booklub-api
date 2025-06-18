@@ -16,7 +16,7 @@ public class VolumeInfo {
     private List<String> authors;
     private String description;
     private ImageLinks imageLinks;
-    private LocalDate publishedDate;
+    private String publishedDate;
     private List<IndustryIdentifier> industryIdentifiers;
 }
 

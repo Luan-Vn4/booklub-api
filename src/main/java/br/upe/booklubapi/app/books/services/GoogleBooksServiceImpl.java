@@ -37,6 +37,12 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
         return new PagedModel<>(pageBookItem);
     }
 
+    @Override
+    public BookItem getBookById(String id) {
+        BookVolume volume = googleGateway.getBookById(id);
+        return convertToBookItem(volume);
+    }
+
     //a gnt transforma para poder enviar um json pro front mais simplificado do q recebemos da api
     private BookItem convertToBookItem(BookVolume volume) {
         VolumeInfo info = volume.getVolumeInfo();
@@ -50,7 +56,7 @@ public class GoogleBooksServiceImpl implements GoogleBooksService {
         String isbn = info.getIndustryIdentifiers() != null && !info.getIndustryIdentifiers().isEmpty()
                 ? info.getIndustryIdentifiers().get(0).getIdentifier()
                 : null;
-        String publishedDate = String.valueOf(info.getPublishedDate());
+        String publishedDate = info.getPublishedDate();
 
         BookItem item = new BookItem();
         item.setId(id);
