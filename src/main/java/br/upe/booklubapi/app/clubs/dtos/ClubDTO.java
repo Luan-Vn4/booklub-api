@@ -18,7 +18,9 @@ public record ClubDTO(
     @NotNull
     Boolean isPrivate,
     @NotNull
-    UUID ownerId
+    UUID ownerId,
+    @NotNull
+    Integer totalMembers
 ) implements Serializable {
 
 }

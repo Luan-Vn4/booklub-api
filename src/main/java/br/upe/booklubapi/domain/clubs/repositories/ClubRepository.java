@@ -16,4 +16,6 @@ public interface ClubRepository
 
     Page<Club> findAllClubsByReadingGoalBookId(String bookId, Pageable pageable);
 
+    Integer countClubMembers(UUID clubId);
+
 }

@@ -36,6 +36,11 @@ public interface JpaClubRepository
     """)
     Page<Club> findAllClubsByReadingGoalBookId(String bookId, Pageable pageable);
 
+    @Query("""
+        SELECT SIZE(c.members) FROM Club c WHERE c.id = :clubId
+    """)
+    Integer countClubMembers(UUID clubId);
+
 }
 
 @Component
