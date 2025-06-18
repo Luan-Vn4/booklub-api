@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/books")
@@ -27,5 +26,9 @@ public class BooksController {
         return googleBooksService.searchBooks(query, pageable);
     }
 
+    @GetMapping("/{id}")
+    public BookItem getBookById(@PathVariable String id) {
+        return googleBooksService.getBookById(id);
+    }
 
 }

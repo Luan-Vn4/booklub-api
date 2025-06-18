@@ -67,4 +67,21 @@ public class GoogleBooksGateway {
 
         return new PageImpl<>(volumes, pageable, totalItems);
     }
+
+    public BookVolume getBookById(String volume_id) {
+        log.info("Fetching book with ID: {}", volume_id);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/volumes/{volume_id}")
+                        .queryParam("key", apiKey)
+                        .build(volume_id))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(BookVolume.class)
+                .doOnError(error -> log.error("Error fetching book by Volume ID", error))
+                .onErrorMap(ex -> new GoogleBooksException("Failed to fetch book by Volume ID", ex))
+                .block();
+    }
+
 }
