@@ -136,6 +136,17 @@ public class ClubMembersServiceImpl implements ClubMembersService {
     }
 
     @Override
+    public Optional<ClubPendingEntryDTO> getUserPendingEntry(
+        UUID userId,
+        UUID clubId
+    ) {
+        return clubPendingEntryRepository.findById(new ClubPendingEntryId(
+            clubId,
+            userId
+        )).map(clubPendingEntryDTOMapper::toDto);
+    }
+
+    @Override
     public ValueDTO<Boolean> isMember(UUID clubId, UUID userId) {
         final User user = getUser(userId);
         final Club club = getClub(clubId);

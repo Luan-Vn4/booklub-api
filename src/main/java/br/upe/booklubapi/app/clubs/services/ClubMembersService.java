@@ -7,6 +7,8 @@ import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ClubMembersService {
@@ -25,6 +27,11 @@ public interface ClubMembersService {
         UUID userId,
         Pageable pageable,
         EntryType entryType
+    );
+
+    Optional<ClubPendingEntryDTO> getUserPendingEntry(
+        UUID userId,
+        UUID clubId
     );
 
     ValueDTO<Boolean> isMember(UUID clubId, UUID userId);

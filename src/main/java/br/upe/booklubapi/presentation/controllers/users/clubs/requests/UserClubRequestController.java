@@ -23,7 +23,27 @@ public class UserClubRequestController {
 
     private final ClubMembersService clubMembersService;
 
-    @GetMapping
+    @GetMapping("clubs/{club-id}/requests")
+    @Operation(
+        summary = "Get Request sent by user to this club"
+    )
+    public ResponseEntity<ClubPendingEntryDTO> getRequest(
+        @PathVariable("user-id")
+        UUID userId,
+        @PathVariable("club-id")
+        UUID clubId
+    ) {
+        final var result = clubMembersService.getUserPendingEntry(
+            userId,
+            clubId
+        );
+
+        return result
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/requests")
     @Operation(
         summary="Search all requests sent by the user"
     )
@@ -41,7 +61,7 @@ public class UserClubRequestController {
         );
     }
 
-    @PostMapping("/{club-id}")
+    @PostMapping("/requests/{club-id}")
     @Operation(
         summary="Send a request to join a club"
     )
@@ -58,7 +78,7 @@ public class UserClubRequestController {
         );
     }
 
-    @DeleteMapping("/{club-id}/cancel")
+    @DeleteMapping("/requests/{club-id}/cancel")
     @Operation(
         summary="Cancel a request to join a club"
     )
