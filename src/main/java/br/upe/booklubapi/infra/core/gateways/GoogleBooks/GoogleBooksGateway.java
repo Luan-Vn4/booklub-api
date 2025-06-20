@@ -41,7 +41,7 @@ public class GoogleBooksGateway {
         BookSearchResponse response =
                 webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/volumes")
+                        .path("volumes")
                         .queryParam("q", query)
                         .queryParam("printType", "books")
                         .queryParam("startIndex", index)
@@ -73,7 +73,7 @@ public class GoogleBooksGateway {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/volumes/{volume_id}")
+                        .path("volumes/{volume_id}")
                         .queryParam("key", apiKey)
                         .build(volume_id))
                 .accept(MediaType.APPLICATION_JSON)
