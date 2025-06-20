@@ -18,10 +18,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Repository
 public interface JpaActivityRepository
         extends JpaRepository<Activity, UUID>,
                 ActivityRepository,
@@ -47,6 +50,7 @@ class JpaActivityRepositoryCustomImpl {
 
     private final EntityManager em;
 
+    // TODO implementar query posteriormente (essa não pega)
     public Page<Activity> findActivitiesForUser(UUID userId, Pageable pageable) {
         QUser user = QUser.user;
         QActivity activity = QActivity.activity;
@@ -54,35 +58,31 @@ class JpaActivityRepositoryCustomImpl {
         QClubActivity clubActivity = new QClubActivity("ca");
         QClub club = QClub.club;
 
-        final JPAQuery<Club> clubsUserParticipates = new JPAQuery<>(em)
-            .select(club)
+        final JPAQuery<UUID> clubsUserParticipates = new JPAQuery<>(em)
+            .select(club.id)
             .from(user)
             .where(user.id.eq(userId))
             .join(user.clubs, club);
 
+        System.out.println(clubsUserParticipates.fetch());
+
         final Long total = new JPAQuery<>(em)
             .select(activity.count())
             .from(activity)
-            .leftJoin(userActivity)
-            .on(
-                userActivity.user.id.eq(userId)
-            )
             .leftJoin(clubActivity)
-            .on(
-                clubActivity.club.in(clubsUserParticipates)
-            ).fetchOne();
+            .on(clubActivity.club.id.in(clubsUserParticipates))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetchOne();
 
         final List<Activity> activities = new JPAQuery<>(em)
             .select(activity)
             .from(activity)
-            .leftJoin(userActivity)
-            .on(
-                userActivity.user.id.eq(userId)
-            )
             .leftJoin(clubActivity)
-            .on(
-                clubActivity.club.in(clubsUserParticipates)
-            ).fetch();
+            .on(clubActivity.club.id.in(clubsUserParticipates))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         return new PageImpl<>(
             activities,
