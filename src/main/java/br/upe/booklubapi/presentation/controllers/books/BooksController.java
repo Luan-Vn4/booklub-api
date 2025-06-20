@@ -23,6 +23,7 @@ public class BooksController {
         if (query == null || query.toString().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Os parâmetros da Query não podem ser nulos ou vazios!");
         }
+        System.out.println("\uD83D\uDD0D QUERY MONTADA: \""+ query +"\"");
         return googleBooksService.searchBooks(query, pageable);
     }
 
