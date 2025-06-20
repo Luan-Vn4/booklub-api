@@ -75,7 +75,7 @@ public class User {
     }
 
     public String getImage() {
-        return attributes.get("imageUrl");
+        return attributes.getOrDefault("imageUrl", "");
     }
 
     public void setImage(String image) {

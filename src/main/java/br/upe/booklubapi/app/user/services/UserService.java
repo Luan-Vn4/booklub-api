@@ -17,7 +17,7 @@ public interface UserService {
 
     UserDTO getByEmail(String email);
 
-    Mono<Void> updateById(UpdateUserDTO updateUserDTO, UUID uuid);
+    UserDTO updateById(UpdateUserDTO updateUserDTO, UUID uuid);
 
     PagedModel<UserDTO> findByUsernameContaining(String username, Pageable page);
 }
