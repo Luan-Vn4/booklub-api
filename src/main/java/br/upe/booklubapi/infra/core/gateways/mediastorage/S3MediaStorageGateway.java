@@ -1,4 +1,4 @@
-package br.upe.booklubapi.infra.core.gateways.mediastorage;
+    package br.upe.booklubapi.infra.core.gateways.mediastorage;
 
 import br.upe.booklubapi.domain.core.gateways.mediastorage.MediaStorageGateway;
 import br.upe.booklubapi.domain.core.gateways.mediastorage.exceptions.BucketAlreadyExistsException;

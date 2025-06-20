@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping(value="/{uuid}", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Mono<Void>> updateUserById(@Valid @ModelAttribute UpdateUserDTO user, @PathVariable UUID uuid) {
+    public ResponseEntity<UserDTO> updateUserById(@Valid @ModelAttribute UpdateUserDTO user, @PathVariable UUID uuid) {
         return ResponseEntity.ok(userService.updateById(user, uuid));
     }
 }

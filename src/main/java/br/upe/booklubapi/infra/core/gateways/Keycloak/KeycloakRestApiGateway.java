@@ -190,6 +190,10 @@ public class KeycloakRestApiGateway {
                 userMap.put("lastName", userDTO.lastName());
                 userMap.put("enabled", true);
 
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("imageUrl", List.of("null"));//gambiarra pra parar um bug de update user no dia da apresentçaop de elisson
+                userMap.put("attributes", attributes);
+
                 List<Map<String, Object>> credentials = new ArrayList<>();
 
                 Map<String, Object> credentialsMap = new HashMap<>();
