@@ -2,6 +2,7 @@ package br.upe.booklubapi.app.clubs.services;
 
 import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
+import br.upe.booklubapi.app.core.dtos.ValueDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.domain.clubs.entities.enums.EntryType;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,8 @@ public interface ClubMembersService {
         Pageable pageable,
         EntryType entryType
     );
+
+    ValueDTO<Boolean> isMember(UUID clubId, UUID userId);
 
     void sendInvitation(UUID clubId, UUID receiverUserId);
 

@@ -4,6 +4,7 @@ import br.upe.booklubapi.app.clubs.dtos.ClubDTO;
 import br.upe.booklubapi.app.clubs.dtos.ClubDTOMapper;
 import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTO;
 import br.upe.booklubapi.app.clubs.dtos.ClubPendingEntryDTOMapper;
+import br.upe.booklubapi.app.core.dtos.ValueDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import br.upe.booklubapi.app.user.dtos.mappers.UserDTOMapper;
 import br.upe.booklubapi.domain.clubs.entities.Club;
@@ -132,6 +133,14 @@ public class ClubMembersServiceImpl implements ClubMembersService {
             clubPendingEntryRepository.findByUserId(userId, pageable, entryType)
                 .map(clubPendingEntryDTOMapper::toDto)
         );
+    }
+
+    @Override
+    public ValueDTO<Boolean> isMember(UUID clubId, UUID userId) {
+        final User user = getUser(userId);
+        final Club club = getClub(clubId);
+
+        return new ValueDTO<>(user.isInClub(club));
     }
 
     @Override

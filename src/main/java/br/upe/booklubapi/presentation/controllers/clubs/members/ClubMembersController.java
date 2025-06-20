@@ -1,6 +1,7 @@
 package br.upe.booklubapi.presentation.controllers.clubs.members;
 
 import br.upe.booklubapi.app.clubs.services.ClubMembersService;
+import br.upe.booklubapi.app.core.dtos.ValueDTO;
 import br.upe.booklubapi.app.user.dtos.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,6 +49,19 @@ public class ClubMembersController {
             "Member with id \"%s\" removed from club with id \"%s\""
                 .formatted(userId, clubId)
         );
+    }
+
+    @GetMapping("/is-member/{user-id}")
+    @Operation(
+        summary="Check if user is a member of the club"
+    )
+    public ResponseEntity<ValueDTO<Boolean>> isMember(
+        @PathVariable("club-id")
+        UUID clubId,
+        @PathVariable("user-id")
+        UUID userId
+    ) {
+        return ResponseEntity.ok(clubMembersService.isMember(clubId, userId));
     }
 
 }
